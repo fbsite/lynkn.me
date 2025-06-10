@@ -125,3 +125,41 @@ app.post('/stripe-webhook', express.raw({type: 'application/json'}), async (req,
 
 // --- INICIAR O SERVIDOR ---
 app.listen(PORT, () => console.log(`Servidor a correr na porta ${PORT}`));
+
+// Adicione esta rota ao seu ficheiro server.js
+
+app.post('/create-payment-intent', async (req, res) => {
+  const { userId, userEmail } = req.body;
+
+  if (!userId) {
+    return res.status(400).send({ error: 'O ID do utilizador é obrigatório.' });
+  }
+
+  // Preço em centavos (29,00 R$ = 2900 centavos)
+  const amount = 2900; 
+
+  try {
+    // Crie um cliente no Stripe para associar os pagamentos (opcional, mas recomendado)
+    const customer = await stripe.customers.create({
+        email: userEmail,
+        name: userId, // ou nome de utilizador
+    });
+
+    // Crie o PaymentIntent
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount,
+      currency: 'brl',
+      customer: customer.id,
+      // Para assinaturas futuras, você usaria setup_future_usage
+    });
+
+    // Envie o client_secret para o frontend
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    });
+
+  } catch (error) {
+    console.error("Erro ao criar PaymentIntent:", error);
+    res.status(500).send({ error: error.message });
+  }
+});
