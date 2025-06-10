@@ -228,21 +228,22 @@
                                     <div x-show="bioTab === 'appearance'" x-transition class="space-y-6">
                                         <div>
                                             <label class="block text-sm font-medium">Plano de Fundo</label>
-                                            <div class="mt-2 flex items-center gap-2">
-                                                <button @click="bioPage.background = '#FFFFFF'" :class="{'ring-2 ring-indigo-500': bioPage.background === '#FFFFFF'}" class="w-8 h-8 rounded-full bg-white border-2 border-white/50"></button>
-                                                <button @click="bioPage.background = '#1F2937'" :class="{'ring-2 ring-indigo-500': bioPage.background === '#1F2937'}" class="w-8 h-8 rounded-full bg-gray-800 border-2 border-white/50"></button>
-                                                <button @click="bioPage.background = '#000000'" :class="{'ring-2 ring-indigo-500': bioPage.background === '#000000'}" class="w-8 h-8 rounded-full bg-black border-2 border-white/50"></button>
+                                            <div class="mt-2 flex flex-wrap items-center gap-2">
+                                                <template x-for="color in colorOptions.background" :key="color.value">
+                                                    <button @click="bioPage.background = color.value" :disabled="color.premium && userPlan === 'free'" :class="{'ring-2 ring-indigo-500': bioPage.background === color.value, 'opacity-50 cursor-not-allowed': color.premium && userPlan === 'free'}" class="w-8 h-8 rounded-full border-2 border-white/50" :style="{ background: color.class ? '' : color.value }" :class="{[color.class]: color.class}"></button>
+                                                </template>
                                                 <div :class="{'opacity-50': userPlan === 'free'}">
                                                     <input type="color" x-model="bioPage.background" :disabled="userPlan === 'free'" class="w-8 h-8 p-1 bg-gray-700 rounded-full cursor-pointer">
                                                 </div>
                                             </div>
+                                            <p x-show="userPlan === 'free'" class="text-xs text-gray-500 mt-2">Mais opções no plano Premium.</p>
                                         </div>
                                         <div>
                                             <label class="block text-sm font-medium">Cor dos Botões</label>
-                                             <div class="mt-2 flex items-center gap-2">
-                                                <button @click="bioPage.buttonColor = 'default'" :class="{'ring-2 ring-indigo-500': bioPage.buttonColor === 'default'}" class="w-8 h-8 rounded-full bg-indigo-500 border-2 border-white/50"></button>
-                                                <button @click="bioPage.buttonColor = '#FFFFFF'" :class="{'ring-2 ring-indigo-500': bioPage.buttonColor === '#FFFFFF'}" class="w-8 h-8 rounded-full bg-white border-2 border-white/50"></button>
-                                                <button @click="bioPage.buttonColor = '#000000'" :class="{'ring-2 ring-indigo-500': bioPage.buttonColor === '#000000'}" class="w-8 h-8 rounded-full bg-black border-2 border-white/50"></button>
+                                             <div class="mt-2 flex flex-wrap items-center gap-2">
+                                                <template x-for="color in colorOptions.buttons" :key="color.value">
+                                                    <button @click="bioPage.buttonColor = color.value" :disabled="color.premium && userPlan === 'free'" :class="{'ring-2 ring-indigo-500': bioPage.buttonColor === color.value, 'opacity-50 cursor-not-allowed': color.premium && userPlan === 'free'}" class="w-8 h-8 rounded-full border-2 border-white/50" :style="{ backgroundColor: color.color }"></button>
+                                                </template>
                                                 <div :class="{'opacity-50': userPlan === 'free'}">
                                                     <input type="color" x-model="bioPage.buttonColor" :disabled="userPlan === 'free'" class="w-8 h-8 p-1 bg-gray-700 rounded-full cursor-pointer">
                                                 </div>
@@ -282,7 +283,7 @@
                                 <p class="text-gray-400 mb-6">Veja como sua página ficará.</p>
                                 <!-- Phone mock -->
                                 <div class="w-full max-w-sm mx-auto bg-gray-600 rounded-[40px] border-[10px] border-indigo-600 shadow-xl overflow-hidden bio-preview-phone">
-                                    <div class="w-full h-[600px] overflow-y-auto p-6 relative" :style="{ backgroundColor: bioPage.background }">
+                                    <div class="w-full h-[600px] overflow-y-auto p-6 relative" :style="{ background: getBioBackground() }">
                                         <div class="text-center" :class="getPreviewTextColor(bioPage.background)">
                                             <div class="w-24 h-24 rounded-full mx-auto mb-2 flex items-center justify-center ring-4 ring-indigo-500 overflow-hidden">
                                                 <img x-show="bioPage.photoURL" :src="bioPage.photoURL" class="w-full h-full object-cover" alt="Foto de perfil do usuário">
@@ -479,12 +480,27 @@
                     description: '',
                     links: [{ title: '', url: '', icon: 'none' }],
                     verified: false,
-                    theme: 'default',
                     buttonColor: 'default',
                     buttonStyle: 'rounded',
-                    background: '#1F2937',
+                    background: '#FFFFFF',
                     photoURL: '',
                     embedCode: '',
+                },
+                colorOptions: {
+                    background: [
+                        { value: '#FFFFFF', premium: false }, { value: '#1F2937', premium: false }, { value: '#000000', premium: false },
+                        { value: '#BE123C', premium: true }, { value: '#047857', premium: true }, { value: '#1D4ED8', premium: true },
+                        { value: '#7E22CE', premium: true },
+                        { value: 'gradient1', premium: true, class: 'bg-gradient-to-r from-green-300 to-blue-400' },
+                        { value: 'gradient2', premium: true, class: 'bg-gradient-to-r from-pink-500 to-yellow-500' },
+                        { value: 'gradient3', premium: true, class: 'bg-gradient-to-r from-purple-400 to-indigo-500' },
+                    ],
+                    buttons: [
+                         { value: 'default', premium: false, color: '#4f46e5' }, { value: '#FFFFFF', premium: false, color: '#FFFFFF' }, { value: '#000000', premium: false, color: '#000000' },
+                         { value: '#EF4444', premium: true, color: '#EF4444' }, { value: '#F59E0B', premium: true, color: '#F59E0B' }, { value: '#22C55E', premium: true, color: '#22C55E' },
+                         { value: '#3B82F6', premium: true, color: '#3B82F6' }, { value: '#8B5CF6', premium: true, color: '#8B5CF6' }, { value: '#EC4899', premium: true, color: '#EC4899' },
+                         { value: '#14B8A6', premium: true, color: '#14B8A6' },
+                    ]
                 },
                 notification: { show: false, message: '' },
                 
@@ -557,7 +573,7 @@
                             this.displayName = null;
                             this.userLinks = [];
                             this.userPlan = 'free';
-                            this.bioPage = { title: '', description: '', links: [{ title: '', url: '', icon: 'none' }], verified: false, theme: 'default', buttonColor: 'default', buttonStyle: 'rounded', background: '#1F2937', photoURL: '', embedCode: '' };
+                            this.bioPage = { title: '', description: '', links: [{ title: '', url: '', icon: 'none' }], verified: false, buttonColor: 'default', buttonStyle: 'rounded', background: '#FFFFFF', photoURL: '', embedCode: '' };
                         }
                     });
 
@@ -591,10 +607,9 @@
                             bioTitle: `@${this.credentials.username}`,
                             bioDescription: '',
                             bioLinks: [],
-                            bioTheme: 'default',
                             bioButtonStyle: 'rounded',
                             bioButtonColor: 'default',
-                            bioBackground: '#1F2937',
+                            bioBackground: '#FFFFFF',
                             bioVerified: false,
                             bioPhotoURL: '',
                             bioEmbedCode: '',
@@ -695,13 +710,13 @@
                             this.bioPage.links = data.bioLinks && data.bioLinks.length > 0 ? data.bioLinks : [{ title: '', url: '', icon: 'none' }];
                             this.bioPage.buttonStyle = data.bioButtonStyle || 'rounded';
                             this.bioPage.buttonColor = data.bioButtonColor || 'default';
-                            this.bioPage.background = data.bioBackground || '#1F2937';
+                            this.bioPage.background = data.bioBackground || '#FFFFFF';
                             this.bioPage.verified = data.bioVerified || false;
                             this.bioPage.photoURL = data.bioPhotoURL || '';
                             this.bioPage.embedCode = data.bioEmbedCode || '';
                         } else {
                              this.userPlan = 'free';
-                             this.bioPage = { title: '', description: '', links: [{ title: '', url: '', icon: 'none' }], buttonStyle: 'rounded', buttonColor: 'default', background: '#1F2937', verified: false, photoURL: '', embedCode: '' };
+                             this.bioPage = { title: '', description: '', links: [{ title: '', url: '', icon: 'none' }], buttonStyle: 'rounded', buttonColor: 'default', background: '#FFFFFF', verified: false, photoURL: '', embedCode: '' };
                         }
                     } catch (error) {
                          console.error("Erro ao carregar dados do usuário:", error);
@@ -774,27 +789,20 @@
                     }
                 },
                 
-                getThemeClasses() {
-                    return { text: 'text-gray-200', subtext: 'text-gray-400', avatarRing: 'ring-indigo-500', phoneBorder: 'border-indigo-600', button: 'bg-indigo-600 text-white' };
-                },
-                
-                getBioBackgroundClass() {
-                    const background = this.bioPage.background;
-                    const isPremium = this.userPlan === 'premium';
-                    if (background.startsWith('#')) return ''; 
-                    
-                    switch(background) {
-                        case 'gradient1': return isPremium ? 'bg-gradient-to-r from-green-300 to-blue-400' : 'bg-white';
-                        case 'gradient2': return isPremium ? 'bg-gradient-to-r from-pink-500 to-yellow-500' : 'bg-white';
-                        case 'gradient3': return isPremium ? 'bg-gradient-to-r from-purple-400 to-indigo-500' : 'bg-white';
-                        default: return '';
-                    }
-                },
-
                 getBioBackground() {
                     const background = this.bioPage.background;
-                    if (background.startsWith('#')) return background;
-                    return '#FFFFFF'; // Fallback for gradients on free plan
+                    const isPremium = this.userPlan === 'premium';
+
+                    if (background.startsWith('#')) {
+                        return background;
+                    }
+                    
+                    switch(background) {
+                        case 'gradient1': return isPremium ? 'linear-gradient(to right, #6EE7B7, #3B82F6)' : '#FFFFFF';
+                        case 'gradient2': return isPremium ? 'linear-gradient(to right, #EC4899, #F59E0B)' : '#FFFFFF';
+                        case 'gradient3': return isPremium ? 'linear-gradient(to right, #A78BFA, #4F46E5)' : '#FFFFFF';
+                        default: return '#FFFFFF'; 
+                    }
                 },
 
                 getBioButtonStyleClass() {
@@ -816,7 +824,7 @@
                 
                 getButtonTextColor(hex) {
                     if (!hex || hex === 'default') hex = '#4f46e5';
-                    if(!hex.startsWith('#')) return '#FFFFFF'; // Assume dark bg for named colors
+                    if(!hex.startsWith('#')) return '#FFFFFF'; 
                     
                     const r = parseInt(hex.slice(1, 3), 16);
                     const g = parseInt(hex.slice(3, 5), 16);
@@ -826,7 +834,7 @@
                 },
                 
                 getPreviewTextColor(bg) {
-                     if (!bg.startsWith('#')) return 'text-gray-800'; // Gradients have light text
+                     if (!bg.startsWith('#')) return 'text-gray-200'; 
                      const r = parseInt(bg.slice(1, 3), 16);
                      const g = parseInt(bg.slice(3, 5), 16);
                      const b = parseInt(bg.slice(5, 7), 16);
@@ -850,10 +858,6 @@
 
                 generateRandomSlug(length = 6) {
                     return Math.random().toString(36).substring(2, 2 + length);
-                },
-
-                toggleTheme() {
-                    // Dark mode is always on
                 },
 
                 showNotification(message) {
