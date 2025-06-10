@@ -122,10 +122,6 @@ app.post('/stripe-webhook', express.raw({type: 'application/json'}), async (req,
   res.status(200).send();
 });
 
-
-// --- INICIAR O SERVIDOR ---
-app.listen(PORT, () => console.log(`Servidor a correr na porta ${PORT}`));
-
 // Adicione esta rota ao seu ficheiro server.js
 
 app.post('/create-payment-intent', async (req, res) => {
@@ -163,3 +159,6 @@ app.post('/create-payment-intent', async (req, res) => {
     res.status(500).send({ error: error.message });
   }
 });
+
+// --- INICIAR O SERVIDOR ---
+app.listen(PORT, () => console.log(`Servidor a correr na porta ${PORT}`));
