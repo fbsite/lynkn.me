@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="">
+<html lang="pt-BR" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,14 +29,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <script>
-        // Lógica para aplicar o tema escuro/claro ao carregar a página
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-          document.documentElement.classList.add('dark')
-        } else {
-          document.documentElement.classList.remove('dark')
-        }
-    </script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -45,18 +37,11 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
         .gradient-text {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #8b9ff8 0%, #a27de0 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        html.dark .gradient-text {
-             background: linear-gradient(135deg, #8b9ff8 0%, #a27de0 100%);
-            -webkit-background-clip: text;
-        }
         .card-shadow {
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        html.dark .card-shadow {
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
         }
         .bio-preview-phone {
@@ -74,17 +59,17 @@
             transition: color 0.2s, border-color 0.2s;
         }
         .tab-button.active {
-            color: #667eea;
-            border-color: #667eea;
-        }
-        html.dark .tab-button.active {
             color: #a27de0;
             border-color: #a27de0;
         }
+        .btn-shadow-soft { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .btn-shadow-hard { box-shadow: 4px 4px 0px 0px rgba(255,255,255,0.2); }
+        .btn-shadow-glow { box-shadow: 0 0 15px 2px rgba(162, 125, 224, 0.6); }
+
         [x-cloak] { display: none !important; }
     </style>
 </head>
-<body x-data="app()" x-init="initFirebase()" class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+<body x-data="app()" x-init="initFirebase()" class="bg-gray-900 text-gray-200">
 
     <!-- Wrapper -->
     <main>
@@ -96,19 +81,13 @@
                     <a href="#plans" class="text-white opacity-80 hover:opacity-100 transition hidden sm:block">Planos</a>
                     
                     <div x-show="!isLoggedIn" class="flex items-center gap-4">
-                        <button @click="showModal = true" class="bg-white/20 text-white font-semibold py-2 px-4 rounded-lg hover:bg-white/30 transition-all duration-300">Entrar</button>
+                        <button @click="showModal = true; authMode = 'login'" class="bg-white/20 text-white font-semibold py-2 px-4 rounded-lg hover:bg-white/30 transition-all duration-300">Entrar</button>
                     </div>
 
                     <div x-show="isLoggedIn" x-cloak class="flex items-center gap-4">
-                        <span x-text="userId ? `ID: ${userId.substring(0, 8)}...` : ''" class="text-white text-sm hidden md:block"></span>
+                        <span x-text="displayName" class="text-white font-semibold hidden md:block"></span>
                         <button @click="logout()" class="bg-red-500/50 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-500/70 transition-all duration-300">Sair</button>
                     </div>
-
-                    <!-- Dark Mode Toggle -->
-                    <button @click="toggleTheme()" class="text-white p-2 rounded-lg bg-white/20 hover:bg-white/30" aria-label="Alternar modo escuro">
-                        <svg x-show="!isDarkMode" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-                        <svg x-show="isDarkMode" x-cloak class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 5.05A1 1 0 016.465 3.636l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zM3 11a1 1 0 100-2H2a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
-                    </button>
                 </nav>
             </div>
         </header>
@@ -118,9 +97,9 @@
             <div class="container mx-auto text-center px-4">
                 <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4">Transforme seus links em experiências que vendem</h1>
                 <p class="text-lg md:text-xl max-w-3xl mx-auto opacity-90 mb-8">Encurte, personalize e crie sua página de "Link na Bio". Tudo na nuvem.</p>
-                <a href="#creator" class="bg-white text-indigo-600 font-bold py-3 px-8 rounded-lg text-lg hover:bg-gray-100 dark:hover:bg-gray-200 transform hover:scale-105 transition-all duration-300">Comece Grátis</a>
+                <a href="#creator" class="bg-white text-indigo-600 font-bold py-3 px-8 rounded-lg text-lg hover:bg-gray-200 transform hover:scale-105 transition-all duration-300">Comece Grátis</a>
             </div>
-             <div class="absolute -bottom-1 left-0 w-full h-16 bg-gray-50 dark:bg-gray-900" style="clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 100%);"></div>
+             <div class="absolute -bottom-1 left-0 w-full h-16 bg-gray-900" style="clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 100%);"></div>
         </section>
 
         <!-- Link Creator Section -->
@@ -128,12 +107,12 @@
             <div class="container mx-auto px-4">
                  <article class="max-w-6xl mx-auto">
                     <!-- TABS -->
-                    <div class="mb-8 border-b border-gray-200 dark:border-gray-700">
+                    <div class="mb-8 border-b border-gray-700">
                         <nav class="flex space-x-8" aria-label="Tabs">
-                            <button @click="setCreatorMode('link')" :class="{ 'active': creatorMode === 'link' }" class="tab-button whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-lg text-gray-500 dark:text-gray-400 border-transparent">
+                            <button @click="setCreatorMode('link')" :class="{ 'active': creatorMode === 'link' }" class="tab-button whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-lg text-gray-400 border-transparent">
                                 Encurtar Link
                             </button>
-                            <button @click="setCreatorMode('bio')" :class="{ 'active': creatorMode === 'bio' }" class="tab-button whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-lg text-gray-500 dark:text-gray-400 border-transparent">
+                            <button @click="setCreatorMode('bio')" :class="{ 'active': creatorMode === 'bio' }" class="tab-button whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-lg text-gray-400 border-transparent">
                                 Link na Bio
                             </button>
                         </nav>
@@ -144,27 +123,27 @@
                         <div class="max-w-xl mx-auto">
                             <div class="flex flex-col">
                                 <h2 id="creator-heading" class="text-2xl font-bold mb-1">Crie seu link irresistível</h2>
-                                <p class="text-gray-500 dark:text-gray-400 mb-6">Seus links são salvos na nuvem.</p>
+                                <p class="text-gray-400 mb-6">Seus links são salvos na nuvem.</p>
                                 
                                 <div class="space-y-4">
                                     <div>
                                         <label for="originalUrl" class="block text-sm font-medium">Link Original</label>
-                                        <input type="url" x-model="link.originalUrl" id="originalUrl" placeholder="https://seusite.com/produto-incrivel" class="mt-1 block w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                                        <input type="url" x-model="link.originalUrl" id="originalUrl" placeholder="https://seusite.com/produto-incrivel" class="mt-1 block w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
                                     </div>
                                     <div>
                                         <label for="customSlug" class="block text-sm font-medium">Slug Personalizado (opcional)</label>
                                         <div class="flex items-center mt-1">
-                                            <span class="inline-flex items-center px-3 py-3 text-gray-500 bg-gray-100 dark:bg-gray-700 border border-r-0 border-gray-300 dark:border-gray-600 rounded-l-lg">lynkn.me/</span>
-                                            <input type="text" x-model="link.slug" id="customSlug" placeholder="oferta-top" class="flex-1 block w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                                            <span class="inline-flex items-center px-3 py-3 text-gray-500 bg-gray-700 border border-r-0 border-gray-600 rounded-l-lg">lynkn.me/</span>
+                                            <input type="text" x-model="link.slug" id="customSlug" placeholder="oferta-top" class="flex-1 block w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
                                         </div>
                                     </div>
-                                    <div class="border-t dark:border-gray-700 pt-4">
-                                        <h3 class="font-bold text-lg text-indigo-600 dark:text-indigo-400">Recursos Premium ✨</h3>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Faça upgrade para personalizar.</p>
+                                    <div class="border-t border-gray-700 pt-4">
+                                        <h3 class="font-bold text-lg text-indigo-400">Recursos Premium ✨</h3>
+                                        <p class="text-sm text-gray-400 mb-4">Faça upgrade para personalizar.</p>
                                         <div class="space-y-4" :class="{ 'opacity-50': userPlan === 'free' }">
                                             <div>
                                                 <label for="gaId" class="block text-sm font-medium">ID do Google Analytics</label>
-                                                <input type="text" x-model="link.gaId" id="gaId" placeholder="UA-12345678-9" class="mt-1 block w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm" :disabled="userPlan === 'free'">
+                                                <input type="text" x-model="link.gaId" id="gaId" placeholder="UA-12345678-9" class="mt-1 block w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg shadow-sm" :disabled="userPlan === 'free'">
                                             </div>
                                         </div>
                                     </div>
@@ -179,83 +158,133 @@
                             <!-- Left Side: Bio Form -->
                             <div class="flex flex-col">
                                 <h2 id="bio-creator-heading" class="text-2xl font-bold mb-1">Crie sua página "Link na Bio"</h2>
-                                <p class="text-gray-500 dark:text-gray-400 mb-6">Agrupe seus links mais importantes em um só lugar.</p>
+                                <p class="text-gray-400 mb-6">Agrupe seus links mais importantes em um só lugar.</p>
                                 <div class="space-y-6">
-                                    <div>
-                                        <label for="bioPhoto" class="block text-sm font-medium">Foto de Perfil</label>
-                                        <div class="mt-1 flex items-center gap-4">
-                                            <span class="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700">
-                                                <img x-show="bioPage.photoURL" :src="bioPage.photoURL" class="h-full w-full object-cover" alt="Pré-visualização da foto de perfil">
-                                                <svg x-show="!bioPage.photoURL" class="h-full w-full text-gray-300 dark:text-gray-500" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                                    <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                                                </svg>
-                                            </span>
-                                            <input type="file" @change="uploadProfilePhoto($event)" id="bioPhoto" class="hidden" accept="image/*">
-                                            <label for="bioPhoto" class="cursor-pointer rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 px-3 text-sm font-medium leading-4 text-gray-700 dark:text-gray-300 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700">Mudar</label>
-                                            <div x-show="isUploadingPhoto" x-cloak class="text-sm text-gray-500">Enviando...</div>
+                                    <!-- Abas Internas: Conteúdo e Aparência -->
+                                    <div class="border-b border-gray-700">
+                                        <nav class="-mb-px flex space-x-6" aria-label="Bio Tabs">
+                                            <button @click="bioTab = 'content'" :class="{'text-indigo-400 border-indigo-500': bioTab === 'content', 'border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-300': bioTab !== 'content'}" class="whitespace-nowrap py-2 px-1 border-b-2 font-medium">Conteúdo</button>
+                                            <button @click="bioTab = 'appearance'" :class="{'text-indigo-400 border-indigo-500': bioTab === 'appearance', 'border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-300': bioTab !== 'appearance'}" class="whitespace-nowrap py-2 px-1 border-b-2 font-medium">Aparência</button>
+                                            <button @click="bioTab = 'embed'" :class="{'text-indigo-400 border-indigo-500': bioTab === 'embed', 'border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-300': bioTab !== 'embed'}" class="whitespace-nowrap py-2 px-1 border-b-2 font-medium">Embed</button>
+                                        </nav>
+                                    </div>
+
+                                    <!-- Aba de Conteúdo -->
+                                    <div x-show="bioTab === 'content'" x-transition class="space-y-6">
+                                        <div>
+                                            <label for="bioPhoto" class="block text-sm font-medium">Foto de Perfil</label>
+                                            <div class="mt-1 flex items-center gap-4">
+                                                <span class="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-700">
+                                                    <img x-show="bioPage.photoURL" :src="bioPage.photoURL" class="h-full w-full object-cover" alt="Pré-visualização da foto de perfil">
+                                                    <svg x-show="!bioPage.photoURL" class="h-full w-full text-gray-500" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                                                </span>
+                                                <input type="file" @change="uploadProfilePhoto($event)" id="bioPhoto" class="hidden" accept="image/*">
+                                                <label for="bioPhoto" class="cursor-pointer rounded-md border border-gray-600 bg-gray-800 py-2 px-3 text-sm font-medium leading-4 text-gray-300 shadow-sm hover:bg-gray-700">Mudar</label>
+                                                <div x-show="isUploadingPhoto" x-cloak class="text-sm text-gray-500">Enviando...</div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label for="bioTitle" class="block text-sm font-medium">Título (ex: @seunome)</label>
+                                            <input type="text" x-model="bioPage.title" id="bioTitle" placeholder="Seu Nome ou Marca" class="mt-1 block w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                                        </div>
+                                         <div>
+                                            <label for="bioDescription" class="block text-sm font-medium">Descrição</label>
+                                            <textarea x-model="bioPage.description" id="bioDescription" rows="2" placeholder="Fale um pouco sobre você ou seus links." class="mt-1 block w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"></textarea>
+                                        </div>
+                                        <div class="border-t border-gray-700 pt-6">
+                                            <h3 class="font-bold text-lg mb-4">Seus Links</h3>
+                                            <div class="space-y-4">
+                                                <template x-for="(bioLink, index) in bioPage.links" :key="index">
+                                                    <div class="flex flex-col gap-4 p-4 bg-gray-800/50 rounded-lg">
+                                                        <div class="flex-grow grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                            <input type="text" x-model="bioLink.title" placeholder="Título do Link (ex: Meu Website)" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md">
+                                                            <input type="url" x-model="bioLink.url" placeholder="https://..." class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md">
+                                                        </div>
+                                                        <div class="flex items-center justify-between">
+                                                            <select x-model="bioLink.icon" class="px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-sm">
+                                                                <option value="none">Nenhum ícone</option>
+                                                                <option value="link">Link Genérico</option>
+                                                                <option value="whatsapp">WhatsApp</option>
+                                                                <option value="instagram">Instagram</option>
+                                                                <option value="tiktok">TikTok</option>
+                                                                <option value="facebook">Facebook</option>
+                                                                <option value="x">X (Twitter)</option>
+                                                                <option value="email">E-mail</option>
+                                                            </select>
+                                                            <button @click="removeBioLinkField(index)" class="text-red-500 hover:text-red-700 p-2 rounded-md hover:bg-red-900/50" aria-label="Remover Link">
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                             <button @click="addBioLinkField()" class="mt-4 w-full py-2 px-6 border-2 border-dashed border-gray-600 text-gray-400 font-semibold rounded-lg hover:border-indigo-500 hover:text-indigo-500 transition-all">
+                                                + Adicionar novo link
+                                            </button>
                                         </div>
                                     </div>
-                                    <div>
-                                        <label for="bioTitle" class="block text-sm font-medium">Título (ex: @seunome)</label>
-                                        <input type="text" x-model="bioPage.title" id="bioTitle" placeholder="Seu Nome ou Marca" class="mt-1 block w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-                                    </div>
-                                     <div>
-                                        <label for="bioDescription" class="block text-sm font-medium">Descrição</label>
-                                        <textarea x-model="bioPage.description" id="bioDescription" rows="2" placeholder="Fale um pouco sobre você ou seus links." class="mt-1 block w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"></textarea>
-                                    </div>
-                                    <!-- Premium Features for Bio Page -->
-                                    <div class="border-t dark:border-gray-700 pt-4" :class="{ 'opacity-50': userPlan === 'free' }">
-                                        <h3 class="font-bold text-lg text-indigo-600 dark:text-indigo-400">Recursos Premium ✨</h3>
-                                        <div class="mt-4 space-y-4">
-                                            <div class="flex items-center justify-between">
+
+                                    <!-- Aba de Aparência -->
+                                    <div x-show="bioTab === 'appearance'" x-transition class="space-y-6">
+                                        <div>
+                                            <label class="block text-sm font-medium">Plano de Fundo</label>
+                                            <div class="mt-2 flex items-center gap-2">
+                                                <button @click="bioPage.background = '#FFFFFF'" :class="{'ring-2 ring-indigo-500': bioPage.background === '#FFFFFF'}" class="w-8 h-8 rounded-full bg-white border-2 border-white/50"></button>
+                                                <button @click="bioPage.background = '#1F2937'" :class="{'ring-2 ring-indigo-500': bioPage.background === '#1F2937'}" class="w-8 h-8 rounded-full bg-gray-800 border-2 border-white/50"></button>
+                                                <button @click="bioPage.background = '#000000'" :class="{'ring-2 ring-indigo-500': bioPage.background === '#000000'}" class="w-8 h-8 rounded-full bg-black border-2 border-white/50"></button>
+                                                <div :class="{'opacity-50': userPlan === 'free'}">
+                                                    <input type="color" x-model="bioPage.background" :disabled="userPlan === 'free'" class="w-8 h-8 p-1 bg-gray-700 rounded-full cursor-pointer">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium">Cor dos Botões</label>
+                                             <div class="mt-2 flex items-center gap-2">
+                                                <button @click="bioPage.buttonColor = 'default'" :class="{'ring-2 ring-indigo-500': bioPage.buttonColor === 'default'}" class="w-8 h-8 rounded-full bg-indigo-500 border-2 border-white/50"></button>
+                                                <button @click="bioPage.buttonColor = '#FFFFFF'" :class="{'ring-2 ring-indigo-500': bioPage.buttonColor === '#FFFFFF'}" class="w-8 h-8 rounded-full bg-white border-2 border-white/50"></button>
+                                                <button @click="bioPage.buttonColor = '#000000'" :class="{'ring-2 ring-indigo-500': bioPage.buttonColor === '#000000'}" class="w-8 h-8 rounded-full bg-black border-2 border-white/50"></button>
+                                                <div :class="{'opacity-50': userPlan === 'free'}">
+                                                    <input type="color" x-model="bioPage.buttonColor" :disabled="userPlan === 'free'" class="w-8 h-8 p-1 bg-gray-700 rounded-full cursor-pointer">
+                                                </div>
+                                             </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium">Estilo da Borda dos Botões</label>
+                                             <div class="mt-2 grid grid-cols-3 gap-4">
+                                                <button @click="bioPage.buttonStyle = 'rounded'" :class="{'ring-2 ring-indigo-500': bioPage.buttonStyle === 'rounded'}" class="py-2 px-4 rounded-lg bg-gray-700 border">Arredondado</button>
+                                                <button @click="bioPage.buttonStyle = 'square'" :class="{'ring-2 ring-indigo-500': bioPage.buttonStyle === 'square'}" class="py-2 px-4 rounded-md bg-gray-700 border">Reto</button>
+                                                <button @click="bioPage.buttonStyle = 'pill'" :class="{'ring-2 ring-indigo-500': bioPage.buttonStyle === 'pill'}" class="py-2 px-4 rounded-full bg-gray-700 border">Pílula</button>
+                                             </div>
+                                        </div>
+                                        <div class="border-t border-gray-700 pt-4" :class="{ 'opacity-50': userPlan === 'free' }">
+                                            <h3 class="font-bold text-lg text-indigo-400">Recursos Premium ✨</h3>
+                                            <div class="mt-4 flex items-center justify-between">
                                                 <label for="verifiedBadge" class="font-medium">Selo de Verificado</label>
                                                 <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
                                                     <input type="checkbox" x-model="bioPage.verified" name="verifiedBadge" id="verifiedBadge" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" :disabled="userPlan === 'free'"/>
                                                     <label for="verifiedBadge" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                                                 </div>
                                             </div>
-                                            <div>
-                                                 <label for="bioTheme" class="block text-sm font-medium">Tema da Página</label>
-                                                 <select x-model="bioPage.theme" id="bioTheme" class="mt-1 block w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm" :disabled="userPlan === 'free'">
-                                                     <option value="default">Padrão (Azul/Roxo)</option>
-                                                     <option value="forest">Floresta (Verde)</option>
-                                                     <option value="sunset">Pôr do sol (Laranja/Rosa)</option>
-                                                     <option value="minimal">Minimalista (Preto/Branco)</option>
-                                                 </select>
-                                            </div>
                                         </div>
                                     </div>
-
-                                    <div class="border-t dark:border-gray-700 pt-6">
-                                        <h3 class="font-bold text-lg mb-4">Seus Links</h3>
-                                        <div class="space-y-4">
-                                            <template x-for="(bioLink, index) in bioPage.links" :key="index">
-                                                <div class="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-                                                    <div class="flex-grow grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                        <input type="text" x-model="bioLink.title" placeholder="Título do Link (ex: Meu Website)" class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md">
-                                                        <input type="url" x-model="bioLink.url" placeholder="https://..." class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md">
-                                                    </div>
-                                                    <button @click="removeBioLinkField(index)" class="text-red-500 hover:text-red-700 p-2 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50" aria-label="Remover Link">
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                                    </button>
-                                                </div>
-                                            </template>
-                                        </div>
-                                         <button @click="addBioLinkField()" class="mt-4 w-full py-2 px-6 border-2 border-dashed border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 font-semibold rounded-lg hover:border-indigo-500 hover:text-indigo-500 transition-all">
-                                            + Adicionar novo link
-                                        </button>
+                                    
+                                    <!-- Aba Embed -->
+                                    <div x-show="bioTab === 'embed'" x-transition class="space-y-4">
+                                         <h3 class="font-bold text-lg">Incorporar Conteúdo</h3>
+                                         <p class="text-sm text-gray-500">Cole o código de incorporação de serviços como YouTube ou Spotify. Será exibido no fim da sua página.</p>
+                                        <textarea x-model="bioPage.embedCode" rows="6" placeholder='<iframe src="..."></iframe>' class="w-full p-2 bg-gray-800 border border-gray-600 rounded-md font-mono text-sm"></textarea>
                                     </div>
                                 </div>
                             </div>
                             <!-- Right Side: Bio Preview -->
                             <div>
                                 <h3 class="text-2xl font-bold mb-1">Pré-visualização</h3>
-                                <p class="text-gray-500 dark:text-gray-400 mb-6">Veja como sua página ficará.</p>
+                                <p class="text-gray-400 mb-6">Veja como sua página ficará.</p>
                                 <!-- Phone mock -->
-                                <div class="w-full max-w-sm mx-auto bg-gray-800 dark:bg-gray-600 rounded-[40px] border-[10px] border-current shadow-xl overflow-hidden bio-preview-phone" :class="getThemeClasses().phoneBorder">
-                                    <div class="w-full h-[600px] overflow-y-auto p-6 relative" :class="getThemeClasses().background">
-                                        <div class="text-center" :class="getThemeClasses().text">
-                                            <div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center ring-4 overflow-hidden" :class="getThemeClasses().avatarRing">
+                                <div class="w-full max-w-sm mx-auto bg-gray-600 rounded-[40px] border-[10px] border-indigo-600 shadow-xl overflow-hidden bio-preview-phone">
+                                    <div class="w-full h-[600px] overflow-y-auto p-6 relative" :style="{ backgroundColor: bioPage.background }">
+                                        <div class="text-center" :class="getPreviewTextColor(bioPage.background)">
+                                            <div class="w-24 h-24 rounded-full mx-auto mb-2 flex items-center justify-center ring-4 ring-indigo-500 overflow-hidden">
                                                 <img x-show="bioPage.photoURL" :src="bioPage.photoURL" class="w-full h-full object-cover" alt="Foto de perfil do usuário">
                                                 <svg x-show="!bioPage.photoURL" class="w-12 h-12 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                                             </div>
@@ -263,15 +292,20 @@
                                                 <h4 class="font-bold text-xl" x-text="bioPage.title || '@seunome'"></h4>
                                                 <svg x-show="bioPage.verified" x-cloak class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20" aria-label="Selo de verificado"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
                                             </div>
-                                            <p class="text-sm mt-1" :class="getThemeClasses().subtext" x-text="bioPage.description || 'Sua descrição aqui.'"></p>
+                                            <p class="text-sm mt-1" x-text="bioPage.description || 'Sua descrição aqui.'"></p>
                                         </div>
-                                        <div class="mt-8 space-y-4">
+                                        
+                                        <div class="mt-6 space-y-4">
                                             <template x-for="bioLink in bioPage.links.filter(l => l.title)">
-                                                <a href="#" @click.prevent class="block w-full text-center p-4 rounded-lg shadow font-semibold hover:scale-105 transition-transform" :class="getThemeClasses().button" x-text="bioLink.title"></a>
+                                                <a href="#" @click.prevent class="flex items-center justify-center gap-3 w-full text-center p-4 font-semibold hover:scale-105 transition-transform" :class="getBioButtonStyleClass()" :style="{ backgroundColor: getBioButtonColor(), color: getButtonTextColor(getBioButtonColor()) }">
+                                                    <div x-html="getSocialIcon(bioLink.icon)" class="w-5 h-5"></div>
+                                                    <span x-text="bioLink.title"></span>
+                                                </a>
                                             </template>
                                         </div>
+                                        <div x-show="bioPage.embedCode" x-cloak class="mt-6" x-html="bioPage.embedCode"></div>
                                         <div class="absolute bottom-4 left-0 right-0 text-center text-xs" x-show="userPlan === 'free'" x-cloak>
-                                            <a href="#" @click.prevent class="font-bold" :class="getThemeClasses().subtext">Criado com <b>lynkn.me</b></a>
+                                            <a href="#" @click.prevent class="font-bold" :class="getPreviewTextColor(bioPage.background)">Criado com <b>lynkn.me</b></a>
                                         </div>
                                     </div>
                                 </div>
@@ -280,7 +314,7 @@
                     </div>
 
                     <!-- Action Button -->
-                     <div class="pt-6 mt-6 border-t dark:border-gray-700">
+                     <div class="pt-6 mt-6 border-t border-gray-700">
                         <button @click="creatorMode === 'link' ? saveLink() : saveBioPage()" :disabled="!isLoggedIn" class="w-full py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-all disabled:bg-gray-400 disabled:cursor-not-allowed">
                             <span x-show="isLoggedIn && creatorMode === 'link'">Salvar Link</span>
                             <span x-show="isLoggedIn && creatorMode === 'bio'">Salvar Página Bio</span>
@@ -293,27 +327,27 @@
         </section>
 
         <!-- My Links Section -->
-        <section x-show="isLoggedIn" x-cloak id="my-links" class="py-20 bg-white dark:bg-gray-800" aria-labelledby="my-links-heading">
+        <section x-show="isLoggedIn" x-cloak id="my-links" class="py-20 bg-gray-800" aria-labelledby="my-links-heading">
             <div class="container mx-auto px-4">
                 <div class="text-center mb-12">
                      <h2 id="my-links-heading" class="text-3xl md:text-4xl font-extrabold">Meus Itens Salvos</h2>
-                     <p class="text-lg text-gray-600 dark:text-gray-300 mt-2 max-w-2xl mx-auto">Gerencie seus links e sua página "Link na Bio".</p>
+                     <p class="text-lg text-gray-300 mt-2 max-w-2xl mx-auto">Gerencie seus links e sua página "Link na Bio".</p>
                 </div>
                 <div class="max-w-4xl mx-auto">
-                    <div x-show="userLinks.length === 0" class="text-center text-gray-500 dark:text-gray-400 p-8 border-2 border-dashed rounded-lg">
+                    <div x-show="userLinks.length === 0" class="text-center text-gray-400 p-8 border-2 border-dashed border-gray-600 rounded-lg">
                         <p>Você ainda não criou nenhum item.</p>
                         <p>Use o formulário acima para começar!</p>
                     </div>
                     <div class="space-y-4">
                         <template x-for="userLink in userLinks" :key="userLink.id">
-                             <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg flex items-center justify-between flex-wrap gap-4">
+                             <div class="bg-gray-700 p-4 rounded-lg flex items-center justify-between flex-wrap gap-4">
                                 <div class="flex-1 min-w-[200px]">
-                                    <p class="font-bold text-indigo-600 dark:text-indigo-400" x-text="`lynkn.me/${userLink.slug}`"></p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 truncate" x-text="userLink.originalUrl"></p>
+                                    <p class="font-bold text-indigo-400" x-text="`lynkn.me/${userLink.slug}`"></p>
+                                    <p class="text-sm text-gray-400 truncate" x-text="userLink.originalUrl"></p>
                                 </div>
                                 <div class="flex items-center gap-4">
                                     <span class="text-sm text-gray-500">Cliques: 0</span>
-                                    <button @click="deleteLink(userLink.id)" class="text-red-500 hover:text-red-700 p-2 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50" aria-label="Apagar link">
+                                    <button @click="deleteLink(userLink.id)" class="text-red-500 hover:text-red-700 p-2 rounded-md hover:bg-red-900/50" aria-label="Apagar link">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                     </button>
                                 </div>
@@ -329,30 +363,30 @@
             <div class="container mx-auto px-4">
                 <div class="text-center mb-12">
                     <h2 id="plans-heading" class="text-3xl md:text-4xl font-extrabold">Planos para todos os níveis</h2>
-                    <p class="text-lg text-gray-600 dark:text-gray-300 mt-2">Comece grátis e evolua quando precisar de mais poder.</p>
+                    <p class="text-lg text-gray-300 mt-2">Comece grátis e evolua quando precisar de mais poder.</p>
                 </div>
                 <div class="flex flex-col sm:flex-row justify-center items-center gap-8">
                     <!-- Free Plan -->
-                    <div class="w-full max-w-sm border border-gray-200 dark:border-gray-700 rounded-xl p-8 card-shadow bg-white dark:bg-gray-800">
+                    <div class="w-full max-w-sm border border-gray-700 rounded-xl p-8 card-shadow bg-gray-800">
                         <h3 class="text-2xl font-bold text-center">Gratuito</h3>
-                        <p class="text-gray-500 dark:text-gray-400 text-center mt-2 mb-6">Para começar com o essencial.</p>
+                        <p class="text-gray-400 text-center mt-2 mb-6">Para começar com o essencial.</p>
                         <p class="text-center mb-6"><span class="text-4xl font-extrabold">R$0</span></p>
                         <ul class="space-y-3 mb-8">
                             <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Encurtador de links</li>
                             <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>1 Página "Link na Bio"</li>
-                            <li class="flex items-center text-gray-400 dark:text-gray-500"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>Personalização Avançada</li>
-                             <li class="flex items-center text-gray-400 dark:text-gray-500"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>Google Analytics</li>
+                            <li class="flex items-center text-gray-500"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>Personalização Avançada</li>
+                             <li class="flex items-center text-gray-500"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>Google Analytics</li>
                             <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Marca d'água lynkn.me</li>
                         </ul>
-                        <button class="w-full py-3 px-6 border border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400 font-bold rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all">Seu plano atual</button>
+                        <button class="w-full py-3 px-6 border border-indigo-400 text-indigo-400 font-bold rounded-lg hover:bg-indigo-900/20 transition-all">Seu plano atual</button>
                     </div>
 
                     <!-- Premium Plan -->
-                    <div class="w-full max-w-sm border-2 border-indigo-600 dark:border-indigo-500 rounded-xl p-8 card-shadow bg-white dark:bg-gray-800 relative">
+                    <div class="w-full max-w-sm border-2 border-indigo-500 rounded-xl p-8 card-shadow bg-gray-800 relative">
                          <span class="absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase">Mais Popular</span>
-                        <h3 class="text-2xl font-bold text-center text-indigo-600 dark:text-indigo-400">Premium</h3>
-                        <p class="text-gray-500 dark:text-gray-400 text-center mt-2 mb-6">Para quem busca o máximo de conversão.</p>
-                        <p class="text-center mb-6"><span class="text-4xl font-extrabold">R$29</span><span class="text-gray-500 dark:text-gray-400">/mês</span></p>
+                        <h3 class="text-2xl font-bold text-center text-indigo-400">Premium</h3>
+                        <p class="text-gray-400 text-center mt-2 mb-6">Para quem busca o máximo de conversão.</p>
+                        <p class="text-center mb-6"><span class="text-4xl font-extrabold">R$29</span><span class="text-gray-400">/mês</span></p>
                         <ul class="space-y-3 mb-8">
                             <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Todos recursos do Gratuito</li>
                             <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Personalização Completa</li>
@@ -367,7 +401,7 @@
         </section>
 
         <!-- Footer -->
-        <footer class="bg-gray-900 dark:bg-black text-white py-12">
+        <footer class="bg-black text-white py-12">
             <div class="container mx-auto px-4 text-center">
                 <p>&copy; <span x-text="new Date().getFullYear()"></span> lynkn.me. Todos os direitos reservados.</p>
             </div>
@@ -376,27 +410,34 @@
     
     <!-- Login Modal -->
     <div x-show="showModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 modal-backdrop p-4" @click.self="showModal = false" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-md p-8 card-shadow modal-content" x-show="showModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95">
+        <div class="bg-gray-800 rounded-2xl w-full max-w-md p-8 card-shadow modal-content" x-show="showModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95">
              <div class="flex justify-between items-center mb-6">
-                 <h2 class="text-2xl font-bold">Acesse ou Crie sua Conta</h2>
-                 <button @click="showModal = false" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                 <h2 class="text-2xl font-bold" x-text="authMode === 'login' ? 'Acesse sua Conta' : 'Crie sua Conta'"></h2>
+                 <button @click="showModal = false" class="text-gray-400 hover:text-gray-200">
                       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                  </button>
              </div>
 
             <div class="space-y-4">
-                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-                    <input type="email" x-model="credentials.email" id="email" class="mt-1 block w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                 <div x-show="authMode === 'signup'" x-transition>
+                    <label for="username" class="block text-sm font-medium text-gray-300">Nome de utilizador</label>
+                    <input type="text" x-model="credentials.username" id="username" class="mt-1 block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
                  </div>
                  <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Senha</label>
-                    <input type="password" x-model="credentials.password" id="password" class="mt-1 block w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
+                    <input type="email" x-model="credentials.email" id="email" class="mt-1 block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
                  </div>
-                 <div class="flex gap-4">
-                    <button @click="login()" class="w-full py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-all">Entrar</button>
-                    <button @click="signup()" class="w-full py-3 px-6 border border-indigo-600 text-indigo-600 font-bold rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all">Cadastrar</button>
+                 <div>
+                    <label for="password" class="block text-sm font-medium text-gray-300">Senha</label>
+                    <input type="password" x-model="credentials.password" id="password" class="mt-1 block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
                  </div>
+                 <div>
+                    <button @click="authMode === 'login' ? login() : signup()" class="w-full py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-all" x-text="authMode === 'login' ? 'Entrar' : 'Criar Conta'"></button>
+                 </div>
+                 <p class="text-center text-sm">
+                    <span x-text="authMode === 'login' ? 'Não tem conta?' : 'Já tem conta?'"></span>
+                    <button @click="authMode = (authMode === 'login' ? 'signup' : 'login')" class="font-medium text-indigo-400 hover:text-indigo-300" x-text="authMode === 'login' ? 'Cadastre-se' : 'Entre'"></button>
+                 </p>
             </div>
         </div>
     </div>
@@ -418,14 +459,16 @@
             return {
                 // State
                 isLoggedIn: false,
-                isDarkMode: false,
                 isUploadingPhoto: false,
                 showModal: false,
+                authMode: 'login',
                 userId: null,
+                displayName: null,
                 userPlan: 'free',
                 userLinks: [],
-                creatorMode: 'link', // 'link' or 'bio'
-                credentials: { email: '', password: '' },
+                creatorMode: 'link',
+                bioTab: 'content',
+                credentials: { email: '', password: '', username: '' },
                 link: {
                     originalUrl: '',
                     slug: '',
@@ -434,10 +477,14 @@
                 bioPage: {
                     title: '',
                     description: '',
-                    links: [{ title: '', url: '' }],
+                    links: [{ title: '', url: '', icon: 'none' }],
                     verified: false,
                     theme: 'default',
-                    photoURL: ''
+                    buttonColor: 'default',
+                    buttonStyle: 'rounded',
+                    background: '#1F2937',
+                    photoURL: '',
+                    embedCode: '',
                 },
                 notification: { show: false, message: '' },
                 
@@ -450,12 +497,10 @@
                 
                 // Methods
                 initFirebase() {
-                    this.isDarkMode = document.documentElement.classList.contains('dark');
-                    
                     const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
                     
                     if (!firebaseConfig.apiKey) {
-                        console.error("Configuração do Firebase não encontrada. Verifique se o ambiente forneceu as credenciais.");
+                        console.error("Configuração do Firebase não encontrada.");
                         this.showNotification("Erro: A configuração do Firebase não está completa.");
                         return;
                     }
@@ -473,7 +518,7 @@
 
                     const initialAuthCheck = new Promise(resolve => {
                         const unsubscribe = onAuthStateChanged(this.auth, async (user) => {
-                            unsubscribe(); // Unsubscribe after the first auth state has been determined.
+                            unsubscribe(); 
                             resolve(user);
                         });
                     });
@@ -496,7 +541,6 @@
                         }
                     }
 
-                    // Setup persistent listener
                     onAuthStateChanged(this.auth, (newUser) => {
                         this.isAuthReady = true;
                         if (this.unsubscribeLinks) this.unsubscribeLinks();
@@ -510,13 +554,13 @@
                         } else {
                             this.isLoggedIn = false;
                             this.userId = newUser ? newUser.uid : null;
+                            this.displayName = null;
                             this.userLinks = [];
                             this.userPlan = 'free';
-                            this.bioPage = { title: '', description: '', links: [{ title: '', url: '' }], verified: false, theme: 'default', photoURL: '' };
+                            this.bioPage = { title: '', description: '', links: [{ title: '', url: '', icon: 'none' }], verified: false, theme: 'default', buttonColor: 'default', buttonStyle: 'rounded', background: '#1F2937', photoURL: '', embedCode: '' };
                         }
                     });
 
-                    // Trigger initial state
                      if (user) {
                         this.isAuthReady = true;
                         if (!user.isAnonymous) {
@@ -532,19 +576,28 @@
                 },
 
                 async signup() {
+                    if(!this.credentials.username) {
+                        this.showNotification("Por favor, escolha um nome de utilizador.");
+                        return;
+                    }
                     try {
                         const userCredential = await createUserWithEmailAndPassword(this.auth, this.credentials.email, this.credentials.password);
                         const userProfileRef = doc(this.db, 'artifacts', this.appId, 'users', userCredential.user.uid);
                         await setDoc(userProfileRef, {
+                            username: this.credentials.username,
                             email: userCredential.user.email,
                             plan: 'free',
                             createdAt: serverTimestamp(),
-                            bioTitle: `@${userCredential.user.email.split('@')[0]}`,
+                            bioTitle: `@${this.credentials.username}`,
                             bioDescription: '',
                             bioLinks: [],
                             bioTheme: 'default',
+                            bioButtonStyle: 'rounded',
+                            bioButtonColor: 'default',
+                            bioBackground: '#1F2937',
                             bioVerified: false,
-                            bioPhotoURL: ''
+                            bioPhotoURL: '',
+                            bioEmbedCode: '',
                         });
                         this.showNotification("Conta criada com sucesso!");
                     } catch (error) {
@@ -602,9 +655,12 @@
                             bioTitle: this.bioPage.title,
                             bioDescription: this.bioPage.description,
                             bioLinks: linksToSave,
-                            bioTheme: this.userPlan === 'premium' ? this.bioPage.theme : 'default',
+                            bioButtonStyle: this.bioPage.buttonStyle,
+                            bioButtonColor: this.bioPage.buttonColor,
+                            bioBackground: this.bioPage.background,
                             bioVerified: this.userPlan === 'premium' ? this.bioPage.verified : false,
                             bioPhotoURL: this.bioPage.photoURL,
+                            bioEmbedCode: this.bioPage.embedCode,
                             updatedAt: serverTimestamp()
                         }, { merge: true });
                          this.showNotification("Página 'Link na Bio' salva com sucesso!");
@@ -632,16 +688,20 @@
                         const docSnap = await getDoc(userProfileRef);
                         if (docSnap.exists()) {
                             const data = docSnap.data();
+                            this.displayName = data.username || null;
                             this.userPlan = data.plan || 'free';
                             this.bioPage.title = data.bioTitle || '';
                             this.bioPage.description = data.bioDescription || '';
-                            this.bioPage.links = data.bioLinks && data.bioLinks.length > 0 ? data.bioLinks : [{ title: '', url: '' }];
-                            this.bioPage.theme = data.bioTheme || 'default';
+                            this.bioPage.links = data.bioLinks && data.bioLinks.length > 0 ? data.bioLinks : [{ title: '', url: '', icon: 'none' }];
+                            this.bioPage.buttonStyle = data.bioButtonStyle || 'rounded';
+                            this.bioPage.buttonColor = data.bioButtonColor || 'default';
+                            this.bioPage.background = data.bioBackground || '#1F2937';
                             this.bioPage.verified = data.bioVerified || false;
                             this.bioPage.photoURL = data.bioPhotoURL || '';
+                            this.bioPage.embedCode = data.bioEmbedCode || '';
                         } else {
                              this.userPlan = 'free';
-                             this.bioPage = { title: '', description: '', links: [{ title: '', url: '' }], theme: 'default', verified: false, photoURL: '' };
+                             this.bioPage = { title: '', description: '', links: [{ title: '', url: '', icon: 'none' }], buttonStyle: 'rounded', buttonColor: 'default', background: '#1F2937', verified: false, photoURL: '', embedCode: '' };
                         }
                     } catch (error) {
                          console.error("Erro ao carregar dados do usuário:", error);
@@ -697,7 +757,7 @@
                 },
 
                 addBioLinkField() {
-                    this.bioPage.links.push({ title: '', url: '' });
+                    this.bioPage.links.push({ title: '', url: '', icon: 'none' });
                 },
 
                 removeBioLinkField(index) {
@@ -715,17 +775,77 @@
                 },
                 
                 getThemeClasses() {
-                    const theme = this.userPlan === 'premium' ? this.bioPage.theme : 'default';
-                    switch(theme) {
-                        case 'forest':
-                            return { background: 'bg-green-50', text: 'text-green-900', subtext: 'text-green-700', button: 'bg-green-600 text-white', avatarRing: 'ring-green-300', phoneBorder: 'border-green-800' };
-                        case 'sunset':
-                             return { background: 'bg-orange-50', text: 'text-orange-900', subtext: 'text-orange-700', button: 'bg-orange-500 text-white', avatarRing: 'ring-orange-300', phoneBorder: 'border-orange-800' };
-                        case 'minimal':
-                            return { background: 'bg-white', text: 'text-black', subtext: 'text-gray-500', button: 'bg-black text-white', avatarRing: 'ring-gray-300', phoneBorder: 'border-black' };
-                        default: // default
-                            return { background: 'bg-indigo-50', text: 'text-indigo-900', subtext: 'text-indigo-700', button: 'bg-indigo-600 text-white', avatarRing: 'ring-indigo-300', phoneBorder: 'border-indigo-800' };
+                    return { text: 'text-gray-200', subtext: 'text-gray-400', avatarRing: 'ring-indigo-500', phoneBorder: 'border-indigo-600', button: 'bg-indigo-600 text-white' };
+                },
+                
+                getBioBackgroundClass() {
+                    const background = this.bioPage.background;
+                    const isPremium = this.userPlan === 'premium';
+                    if (background.startsWith('#')) return ''; 
+                    
+                    switch(background) {
+                        case 'gradient1': return isPremium ? 'bg-gradient-to-r from-green-300 to-blue-400' : 'bg-white';
+                        case 'gradient2': return isPremium ? 'bg-gradient-to-r from-pink-500 to-yellow-500' : 'bg-white';
+                        case 'gradient3': return isPremium ? 'bg-gradient-to-r from-purple-400 to-indigo-500' : 'bg-white';
+                        default: return '';
                     }
+                },
+
+                getBioBackground() {
+                    const background = this.bioPage.background;
+                    if (background.startsWith('#')) return background;
+                    return '#FFFFFF'; // Fallback for gradients on free plan
+                },
+
+                getBioButtonStyleClass() {
+                    const style = this.bioPage.buttonStyle;
+                    switch(style) {
+                        case 'rounded': return 'rounded-lg';
+                        case 'square': return 'rounded-md';
+                        case 'pill': return 'rounded-full';
+                        default: return 'rounded-lg';
+                    }
+                },
+                
+                getBioButtonColor() {
+                    if (this.bioPage.buttonColor !== 'default') {
+                        return this.bioPage.buttonColor;
+                    }
+                    return '#4f46e5'; // Default site color (indigo-600)
+                },
+                
+                getButtonTextColor(hex) {
+                    if (!hex || hex === 'default') hex = '#4f46e5';
+                    if(!hex.startsWith('#')) return '#FFFFFF'; // Assume dark bg for named colors
+                    
+                    const r = parseInt(hex.slice(1, 3), 16);
+                    const g = parseInt(hex.slice(3, 5), 16);
+                    const b = parseInt(hex.slice(5, 7), 16);
+                    const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+                    return (yiq >= 128) ? '#000000' : '#FFFFFF';
+                },
+                
+                getPreviewTextColor(bg) {
+                     if (!bg.startsWith('#')) return 'text-gray-800'; // Gradients have light text
+                     const r = parseInt(bg.slice(1, 3), 16);
+                     const g = parseInt(bg.slice(3, 5), 16);
+                     const b = parseInt(bg.slice(5, 7), 16);
+                     const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+                     return (yiq >= 128) ? 'text-gray-800' : 'text-gray-200';
+                },
+
+                getSocialIcon(name) {
+                    const icons = {
+                        link: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>`,
+                        whatsapp: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99 0-3.903-.52-5.58-1.45L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.731 6.086l.001.004l-1.03 3.766l3.844-1.041z"/></svg>`,
+                        instagram: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>`,
+                        tiktok: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-2.43.05-4.86-.95-6.69-2.81-1.75-1.76-2.59-4.18-2.6-6.75v-.02c.02-2.18.9-4.33 2.51-5.91s3.81-2.48 5.99-2.54c.05 1.52.1 3.04.1 4.56v.02c-.8-.01-1.59.12-2.35.43-.9.38-1.67.92-2.26 1.61-.63.72-1.03 1.61-1.16 2.54v.02c-.02.63-.01 1.27.04 1.9.05.65.24 1.28.52 1.86.33.7.8 1.29 1.39 1.79.49.42 1.06.74 1.68.95.63.22 1.29.31 1.96.28.01-2.26.01-4.52.01-6.78z"/></svg>`,
+                        facebook: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`,
+                        x: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
+                        email: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M1.946 9.315c.522-.174 1.103-.349 1.714-.533 2.441-.741 5.378-1.135 8.342-1.135s5.901.394 8.342 1.135c.611.183 1.192.359 1.714.533a1.5 1.5 0 01.954 1.486v6.385a1.5 1.5 0 01-.954 1.486c-.522.174-1.103.349-1.714.533-2.441.741-5.378 1.135-8.342 1.135s-5.901-.394-8.342-1.135c-.611-.183-1.192-.359-1.714-.533A1.5 1.5 0 010 17.186V10.801a1.5 1.5 0 01.954-1.486zM12 15.632a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z"/></svg>`,
+                        none: ''
+                    };
+                    return icons[name] || '';
                 },
 
                 generateRandomSlug(length = 6) {
@@ -733,9 +853,7 @@
                 },
 
                 toggleTheme() {
-                    this.isDarkMode = !this.isDarkMode;
-                    document.documentElement.classList.toggle('dark', this.isDarkMode);
-                    localStorage.theme = this.isDarkMode ? 'dark' : 'light';
+                    // Dark mode is always on
                 },
 
                 showNotification(message) {
