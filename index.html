@@ -400,11 +400,75 @@
                              <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Selo de Verificado</li>
                              <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Sem marca d'água</li>
                         </ul>
-                        <button class="w-full py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transform hover:scale-105 transition-all">Fazer Upgrade</button>
+                        <button @click="upgradePlan()" class="w-full ... ">class="w-full py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transform hover:scale-105 transition-all">Fazer Upgrade</button>
                     </div>
                 </div>
             </div>
         </section>
+
+        // Dentro do objeto de retorno de window.app()
+
+// ... outras propriedades
+
+stripe: null,
+elements: null,
+
+async upgradePlan() {
+    if (!this.isLoggedIn) {
+        this.showNotification("Por favor, faça login para fazer o upgrade.");
+        this.showModal = true;
+        return;
+    }
+
+    this.showPaymentModal = true;
+
+    // Aguarda o próximo "tick" do DOM para garantir que os elementos do modal estão visíveis
+    await this.$nextTick(); 
+
+    // Inicializa o Stripe e o formulário de pagamento
+    // A sua chave publicável do Stripe
+    this.stripe = Stripe('pk_test_...SUA_CHAVE_PUBLICAVEL_AQUI'); 
+
+    // 1. Cria um PaymentIntent no seu servidor
+    const response = await fetch('http://localhost:4242/create-payment-intent', { // Use o URL do seu servidor
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: this.userId, email: this.credentials.email })
+    });
+    const { clientSecret } = await response.json();
+
+    // 2. Cria e monta o Elemento de Pagamento
+    this.elements = this.stripe.elements({ clientSecret });
+    const paymentElement = this.elements.create("payment");
+    paymentElement.mount("#payment-element");
+
+    // 3. Lida com a submissão do formulário
+    const form = document.getElementById('payment-form');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        document.getElementById('submit').disabled = true;
+        document.getElementById('spinner').style.display = 'inline';
+        document.getElementById('button-text').style.display = 'none';
+
+        const { error } = await this.stripe.confirmPayment({
+            elements: this.elements,
+            confirmParams: {
+                return_url: `${window.location.origin}/sucesso.html`, // Página de sucesso
+            },
+        });
+
+        if (error) {
+            const messageContainer = document.getElementById('payment-message');
+            messageContainer.textContent = error.message;
+            messageContainer.style.display = 'block';
+            document.getElementById('submit').disabled = false;
+            document.getElementById('spinner').style.display = 'none';
+            document.getElementById('button-text').style.display = 'inline';
+        }
+    });
+},
+
 
         <!-- Footer -->
         <footer class="bg-black text-white py-12">
