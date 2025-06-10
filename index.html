@@ -446,24 +446,16 @@
                 db: null,
                 appId: 'default-app-id',
                 unsubscribeLinks: null,
+                isAuthReady: false,
                 
                 // Methods
                 initFirebase() {
                     this.isDarkMode = document.documentElement.classList.contains('dark');
                     
-                    // COLE O SEU OBJETO DE CONFIGURAÇÃO DO FIREBASE AQUI
-                    const firebaseConfig = {
-                        apiKey: "AIzaSyBYcnWPrR0jvLmtcBc0aDrZn2HP2O7QyrM",
-                        authDomain: "linkn-4d006.firebaseapp.com",
-                        projectId: "linkn-4d006",
-                        storageBucket: "linkn-4d006.appspot.com",
-                        messagingSenderId: "74692137411",
-                        appId: "1:74692137411:web:da0a98fe48dc0c7341ed76",
-                        measurementId: "G-DJZ3M0VE8J"
-                    };
+                    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
                     
                     if (!firebaseConfig.apiKey) {
-                        console.error("Configuração do Firebase não encontrada. Cole o seu objeto firebaseConfig.");
+                        console.error("Configuração do Firebase não encontrada. Verifique se o ambiente forneceu as credenciais.");
                         this.showNotification("Erro: A configuração do Firebase não está completa.");
                         return;
                     }
@@ -478,44 +470,63 @@
 
                 async handleAuthState() {
                     await setPersistence(this.auth, browserSessionPersistence);
-                    
-                    onAuthStateChanged(this.auth, async (user) => {
-                        if (this.unsubscribeLinks) this.unsubscribeLinks();
-                        
-                        if (user && !user.isAnonymous) {
-                            this.isLoggedIn = true;
-                            this.userId = user.uid;
-                            this.showModal = false;
-                            
-                            this.loadUserLinks();
-                            this.loadUserData();
 
-                        } else {
-                            this.isLoggedIn = false;
-                            this.userId = user ? user.uid : null;
-                            this.userLinks = [];
-                            this.userPlan = 'free';
-                            this.bioPage = { title: '', description: '', links: [{ title: '', url: '' }], verified: false, theme: 'default', photoURL: '' };
-                            
-                            if (!user) {
-                                try {
-                                    await signInAnonymously(this.auth);
-                                } catch(error) {
-                                    console.error("Falha ao fazer login anônimo:", error);
-                                }
-                            }
-                        }
+                    const initialAuthCheck = new Promise(resolve => {
+                        const unsubscribe = onAuthStateChanged(this.auth, async (user) => {
+                            unsubscribe(); // Unsubscribe after the first auth state has been determined.
+                            resolve(user);
+                        });
                     });
 
-                    if (!this.auth.currentUser) {
-                         try {
-                            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                                await signInWithCustomToken(this.auth, __initial_auth_token);
+                    let user = await initialAuthCheck;
+
+                    if (!user) {
+                        try {
+                            const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                            if (token) {
+                                await signInWithCustomToken(this.auth, token);
                             } else {
                                 await signInAnonymously(this.auth);
                             }
+                            user = this.auth.currentUser;
                         } catch (error) {
-                            console.error("Erro na autenticação inicial:", error);
+                            console.error("Erro na autenticação inicial, tentando anônimo:", error);
+                            if (!this.auth.currentUser) await signInAnonymously(this.auth).catch(e => console.error("Falha no fallback anônimo:", e));
+                            user = this.auth.currentUser;
+                        }
+                    }
+
+                    // Setup persistent listener
+                    onAuthStateChanged(this.auth, (newUser) => {
+                        this.isAuthReady = true;
+                        if (this.unsubscribeLinks) this.unsubscribeLinks();
+
+                        if (newUser && !newUser.isAnonymous) {
+                            this.isLoggedIn = true;
+                            this.userId = newUser.uid;
+                            this.showModal = false;
+                            this.loadUserData();
+                            this.loadUserLinks();
+                        } else {
+                            this.isLoggedIn = false;
+                            this.userId = newUser ? newUser.uid : null;
+                            this.userLinks = [];
+                            this.userPlan = 'free';
+                            this.bioPage = { title: '', description: '', links: [{ title: '', url: '' }], verified: false, theme: 'default', photoURL: '' };
+                        }
+                    });
+
+                    // Trigger initial state
+                     if (user) {
+                        this.isAuthReady = true;
+                        if (!user.isAnonymous) {
+                            this.isLoggedIn = true;
+                            this.userId = user.uid;
+                            this.loadUserData();
+                            this.loadUserLinks();
+                        } else {
+                            this.isLoggedIn = false;
+                            this.userId = user.uid;
                         }
                     }
                 },
@@ -603,7 +614,7 @@
                 },
 
                 loadUserLinks() {
-                    if (!this.userId || (this.auth.currentUser && this.auth.currentUser.isAnonymous)) return;
+                    if (!this.isAuthReady || !this.userId || (this.auth.currentUser && this.auth.currentUser.isAnonymous)) return;
                     const linksCollection = collection(this.db, 'artifacts', this.appId, 'users', this.userId, 'links');
                     const q = query(linksCollection);
                     
@@ -615,7 +626,7 @@
                 },
 
                 async loadUserData() {
-                    if (!this.userId || (this.auth.currentUser && this.auth.currentUser.isAnonymous)) return;
+                    if (!this.isAuthReady || !this.userId || (this.auth.currentUser && this.auth.currentUser.isAnonymous)) return;
                     const userProfileRef = doc(this.db, 'artifacts', this.appId, 'users', this.userId);
                     try {
                         const docSnap = await getDoc(userProfileRef);
@@ -649,8 +660,7 @@
                         return;
                     }
 
-                    // Obtenha sua chave de API gratuita em https://api.imgbb.com/
-                    const apiKey = 'YOUR_IMGBB_API_KEY'; // COLE A SUA CHAVE DA API DO IMGBB AQUI
+                    const apiKey = 'YOUR_IMGBB_API_KEY';
 
                     if(apiKey === 'YOUR_IMGBB_API_KEY') {
                         this.showNotification("Erro: A chave da API do ImgBB não está configurada.");
