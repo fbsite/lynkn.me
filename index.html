@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
+    <script src="https://js.stripe.com/v3/"></script>
+
     <!-- SEO Meta Tags -->
     <title>lynkn.me - Encurtador de Links e Link na Bio</title>
     <meta name="description" content="Transforme links longos em links curtos e crie uma página personalizada de 'Link na Bio' para agrupar todos os seus links importantes. Monitore e personalize.">
@@ -511,6 +513,26 @@
                 appId: 'default-app-id',
                 unsubscribeLinks: null,
                 isAuthReady: false,
+
+                <!-- Modal de Pagamento -->
+<div x-show="showPaymentModal" x-cloak>
+    <div class="fixed inset-0 bg-black/60 flex items-center justify-center p-4">
+        <div @click.away="showPaymentModal = false" class="bg-gray-800 rounded-2xl w-full max-w-md p-8 card-shadow">
+            <h2 class="text-2xl font-bold mb-4">Finalizar Assinatura Premium</h2>
+
+            <form id="payment-form">
+                <!-- O Stripe Element para o cartão será montado aqui -->
+                <div id="payment-element" class="p-4 bg-gray-900 rounded-md"></div>
+
+                <button id="submit" class="w-full mt-6 py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-all">
+                    <span id="button-text">Pagar R$29,00</span>
+                    <span id="spinner" class="hidden">Processando...</span>
+                </button>
+                <div id="payment-message" class="hidden text-center text-red-400 mt-2"></div>
+            </form>
+        </div>
+    </div>
+</div>
                 
                 // Methods
                 initFirebase() {
