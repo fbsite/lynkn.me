@@ -427,7 +427,7 @@ async upgradePlan() {
 
     // Inicializa o Stripe e o formulário de pagamento
     // A sua chave publicável do Stripe
-    this.stripe = Stripe('pk_test_...SUA_CHAVE_PUBLICAVEL_AQUI'); 
+    this.stripe = Stripe('pk_test_51RYO3APnabtqgpvozmeYrG7muzrbDL7gCWqCc8SpdxGqrjvE58CLTY7uegD25SsI5pZuYk3lwQeUuNDDE6BoP2Da00XxmU2BD8'); 
 
     // 1. Cria um PaymentIntent no seu servidor
     const response = await fetch('http://localhost:4242/create-payment-intent', { // Use o URL do seu servidor
