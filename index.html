@@ -257,7 +257,7 @@
                                              <div class="mt-2 grid grid-cols-3 gap-4">
                                                 <button @click="bioPage.buttonStyle = 'square'" :class="{'ring-2 ring-indigo-500': bioPage.buttonStyle === 'square'}" class="py-2 px-4 rounded-md bg-gray-700 border">Quadrado</button>
                                                 <button @click="bioPage.buttonStyle = 'rounded'" :class="{'ring-2 ring-indigo-500': bioPage.buttonStyle === 'rounded'}" class="py-2 px-4 rounded-full bg-gray-700 border">Redondo</button>
-                                                <button @click="bioPage.buttonStyle = 'dotted'" :class="{'ring-2 ring-indigo-500': bioPage.buttonStyle === 'dotted'}" class="py-2 px-4 rounded-lg bg-gray-700 border-2 border-dashed border-gray-500">Pontilhado</button>
+                                                <button @click="bioPage.buttonStyle = 'dotted'" :class="{'ring-2 ring-indigo-500': bioPage.buttonStyle === 'dotted'}" class="py-2 px-4 rounded-lg bg-transparent border-2 border-dashed border-gray-500">Pontilhado</button>
                                              </div>
                                         </div>
                                         <div class="border-t border-gray-700 pt-4" :class="{ 'opacity-50': userPlan === 'free' }">
@@ -514,7 +514,17 @@
                 
                 // Methods
                 initFirebase() {
-                    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+                    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) :
+                     {
+                     // SE NÃO ESTIVER A USAR O AMBIENTE, COLE O SEU OBJETO DE CONFIGURAÇÃO DO FIREBASE AQUI
+                    apiKey: "AIzaSyBYcnWPrR0jvLmtcBc0aDrZn2HP2O7QyrM",
+  authDomain: "linkn-4d006.firebaseapp.com",
+  projectId: "linkn-4d006",
+  storageBucket: "linkn-4d006.firebasestorage.app",
+  messagingSenderId: "74692137411",
+  appId: "1:74692137411:web:da0a98fe48dc0c7341ed76",
+  measurementId: "G-DJZ3M0VE8J"
+                    };
                     
                     if (!firebaseConfig.apiKey) {
                         console.error("Configuração do Firebase não encontrada.");
@@ -736,9 +746,9 @@
                         return;
                     }
 
-                    const apiKey = 'YOUR_IMGBB_API_KEY';
+                    const apiKey = 'cc86c1e0e12b7ffe3d91899dc867df60';
 
-                    if(apiKey === 'YOUR_IMGBB_API_KEY') {
+                    if(apiKey === 'cc86c1e0e12b7ffe3d91899dc867df60') {
                         this.showNotification("Erro: A chave da API do ImgBB não está configurada.");
                         console.error("Configure sua chave de API do ImgBB no código para fazer o upload de imagens.");
                         return;
