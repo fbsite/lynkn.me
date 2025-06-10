@@ -10,7 +10,7 @@ require('dotenv').config(); // Para carregar variáveis de ambiente de um fichei
 // 1. Configuração do Firebase Admin
 // Descarregue o seu ficheiro de chave da conta de serviço no Firebase Console:
 // Definições do projeto -> Contas de serviço -> Gerar nova chave privada
-const serviceAccount = require('./path/to/serviceAccountKey.json'); // <-- ATUALIZE AQUI: Coloque o caminho para o seu ficheiro de chave
+const serviceAccount = require('./linkn-4d006-firebase-adminsdk-fbsvc-1bebe35a99.json'); // <-- ATUALIZE AQUI: Coloque o caminho para o seu ficheiro de chave
 
 initializeApp({
   credential: cert(serviceAccount)
