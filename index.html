@@ -8,19 +8,19 @@
     <title>lynkn.me - Encurtador de Links e Link na Bio</title>
     <meta name="description" content="Transforme links longos em links curtos e crie uma página personalizada de 'Link na Bio' para agrupar todos os seus links importantes. Monitore e personalize.">
     <meta name="keywords" content="encurtador de link, link na bio, links personalizados, agregador de links, marketing digital">
-    <link rel="canonical" href="https://lynkn.me">
+    <link rel="canonical" href="lynkn-me.vercel.app">
     <meta name="robots" content="index, follow">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://lynkn.me/">
+    <meta property="og:url" content="lynkn-me.vercel.app/">
     <meta property="og:title" content="lynkn.me - Encurtador de Links e Link na Bio">
     <meta property="og:description" content="Transforme links longos em links curtos e crie uma página personalizada de 'Link na Bio' para agrupar todos os seus links importantes.">
     <meta property="og:image" content="https://placehold.co/1200x630/667eea/ffffff?text=lynkn.me">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://lynkn.me/">
+    <meta property="twitter:url" content="lynkn-me.vercel.app/">
     <meta property="twitter:title" content="lynkn.me - Encurtador de Links e Link na Bio">
     <meta property="twitter:description" content="Transforme links longos em links curtos e crie uma página personalizada de 'Link na Bio' para agrupar todos os seus links importantes.">
     <meta property="twitter:image" content="https://placehold.co/1200x630/667eea/ffffff?text=lynkn.me">
@@ -56,12 +56,9 @@
         .modal-content {
             transition: transform 0.3s ease-in-out;
         }
-        .tab-button {
-            transition: color 0.2s, border-color 0.2s;
-        }
-        .tab-button.active {
-            color: #a27de0;
-            border-color: #a27de0;
+        .tab-button-active {
+             background-color: #4f46e5;
+             color: #ffffff;
         }
         .embed-container iframe {
             width: 100%;
@@ -111,23 +108,26 @@
             <div class="container mx-auto px-4">
                  <article class="max-w-6xl mx-auto">
                     <!-- TABS -->
-                    <div class="mb-8 border-b border-gray-700">
-                        <nav class="flex space-x-8" aria-label="Tabs">
-                            <button @click="setCreatorMode('link')" :class="{ 'active': creatorMode === 'link' }" class="tab-button whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-lg text-gray-400 border-transparent">
+                    <div class="flex justify-center mb-12">
+                        <div class="bg-gray-800 p-1 rounded-xl flex space-x-1">
+                            <button @click="setCreatorMode('link')" :class="creatorMode === 'link' ? 'tab-button-active' : 'text-gray-400 hover:bg-gray-700'" class="px-6 py-2 text-lg font-bold rounded-lg transition-all">
                                 Encurtar Link
                             </button>
-                            <button @click="setCreatorMode('bio')" :class="{ 'active': creatorMode === 'bio' }" class="tab-button whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-lg text-gray-400 border-transparent">
+                            <button @click="setCreatorMode('bio')" :class="creatorMode === 'bio' ? 'tab-button-active' : 'text-gray-400 hover:bg-gray-700'" class="px-6 py-2 text-lg font-bold rounded-lg transition-all">
                                 Link na Bio
                             </button>
-                        </nav>
+                            <button @click="setCreatorMode('qrcode')" :class="creatorMode === 'qrcode' ? 'tab-button-active' : 'text-gray-400 hover:bg-gray-700'" class="px-6 py-2 text-lg font-bold rounded-lg transition-all">
+                                Gerador de QR Code
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Link Shortener View -->
                     <div x-show="creatorMode === 'link'" x-transition>
                         <div class="max-w-xl mx-auto">
                             <div class="flex flex-col">
-                                <h2 id="creator-heading" class="text-2xl font-bold mb-1">Crie seu link irresistível</h2>
-                                <p class="text-gray-400 mb-6">Seus links são salvos na nuvem.</p>
+                                <h2 id="creator-heading-link" class="text-2xl font-bold mb-1 text-center">Crie seu link irresistível com Short.io</h2>
+                                <p class="text-gray-400 mb-6 text-center">Seus links são criados e salvos na sua conta Short.io.</p>
                                 
                                 <div class="space-y-4">
                                     <div>
@@ -137,18 +137,8 @@
                                     <div>
                                         <label for="customSlug" class="block text-sm font-medium">Slug Personalizado (opcional)</label>
                                         <div class="flex items-center mt-1">
-                                            <span class="inline-flex items-center px-3 py-3 text-gray-500 bg-gray-700 border border-r-0 border-gray-600 rounded-l-lg">lynkn.me/</span>
+                                            <span class="inline-flex items-center px-3 py-3 text-gray-500 bg-gray-700 border border-r-0 border-gray-600 rounded-l-lg" x-text="shortIoDomain ? `${shortIoDomain}/` : 'dominio.com/'"></span>
                                             <input type="text" x-model="link.slug" id="customSlug" placeholder="oferta-top" class="flex-1 block w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-                                        </div>
-                                    </div>
-                                    <div class="border-t border-gray-700 pt-4">
-                                        <h3 class="font-bold text-lg text-indigo-400">Recursos Premium ✨</h3>
-                                        <p class="text-sm text-gray-400 mb-4">Faça upgrade para personalizar.</p>
-                                        <div class="space-y-4" :class="{ 'opacity-50': userPlan === 'free' }">
-                                            <div>
-                                                <label for="gaId" class="block text-sm font-medium">ID do Google Analytics</label>
-                                                <input type="text" x-model="link.gaId" id="gaId" placeholder="UA-12345678-9" class="mt-1 block w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg shadow-sm" :disabled="userPlan === 'free'">
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -317,9 +307,35 @@
                             </div>
                         </div>
                     </div>
+                    <!-- QR Code Generator View -->
+                    <div x-show="creatorMode === 'qrcode'" x-cloak x-transition>
+                         <div class="max-w-xl mx-auto">
+                            <div class="flex flex-col items-center">
+                                <h2 class="text-2xl font-bold mb-1 text-center">Gerador de QR Code</h2>
+                                <p class="text-gray-400 mb-6 text-center">Crie um QR Code para qualquer URL instantaneamente.</p>
+                                
+                                <div class="w-full space-y-4">
+                                    <div>
+                                        <label for="qrUrl" class="block text-sm font-medium">URL para o QR Code</label>
+                                        <input type="url" x-model="qrCodeUrl" id="qrUrl" placeholder="https://seusite.com" class="mt-1 block w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                                    </div>
+                                    <button @click="generateQrCode()" class="w-full py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-all">Gerar QR Code</button>
+                                </div>
 
-                    <!-- Action Button -->
-                     <div class="pt-6 mt-6 border-t border-gray-700">
+                                <div x-show="generatedQrCode" class="mt-8 text-center p-6 bg-white rounded-xl">
+                                    <h3 class="font-bold text-lg text-gray-800 mb-4">Seu QR Code está pronto!</h3>
+                                    <img :src="generatedQrCode" class="mx-auto rounded-lg" alt="QR Code Gerado">
+                                    <a :href="generatedQrCode" :download="`qrcode-${Date.now()}.png`" class="inline-block mt-4 py-2 px-6 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition-all">
+                                        Download
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Action Button (only for link and bio) -->
+                     <div x-show="creatorMode !== 'qrcode'" class="pt-6 mt-6 border-t border-gray-700">
                         <button @click="creatorMode === 'link' ? saveLink() : saveBioPage()" :disabled="!isLoggedIn" class="w-full py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-all disabled:bg-gray-400 disabled:cursor-not-allowed">
                             <span x-show="isLoggedIn && creatorMode === 'link'">Salvar Link</span>
                             <span x-show="isLoggedIn && creatorMode === 'bio'">Salvar Página Bio</span>
@@ -347,7 +363,7 @@
                         <template x-for="userLink in userLinks" :key="userLink.id">
                              <div class="bg-gray-700 p-4 rounded-lg flex items-center justify-between flex-wrap gap-4">
                                 <div class="flex-1 min-w-[200px]">
-                                    <p class="font-bold text-indigo-400" x-text="`lynkn.me/${userLink.slug}`"></p>
+                                    <p class="font-bold text-indigo-400" x-text="userLink.shortURL"></p>
                                     <p class="text-sm text-gray-400 truncate" x-text="userLink.originalUrl"></p>
                                 </div>
                                 <div class="flex items-center gap-4">
@@ -373,37 +389,51 @@
                     <h2 id="plans-heading" class="text-3xl md:text-4xl font-extrabold">Planos para todos os níveis</h2>
                     <p class="text-lg text-gray-300 mt-2">Comece grátis e evolua quando precisar de mais poder.</p>
                 </div>
-                <div class="flex flex-col sm:flex-row justify-center items-center gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch justify-center">
                     <!-- Free Plan -->
-                    <div class="w-full max-w-sm border border-gray-700 rounded-xl p-8 card-shadow bg-gray-800">
+                    <div class="w-full max-w-sm mx-auto border border-gray-700 rounded-xl p-8 card-shadow bg-gray-800 flex flex-col">
                         <h3 class="text-2xl font-bold text-center">Gratuito</h3>
                         <p class="text-gray-400 text-center mt-2 mb-6">Para começar com o essencial.</p>
                         <p class="text-center mb-6"><span class="text-4xl font-extrabold">R$0</span></p>
-                        <ul class="space-y-3 mb-8">
-                            <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Encurtador de links</li>
-                            <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>1 Página "Link na Bio"</li>
-                            <li class="flex items-center text-gray-500"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>Personalização Avançada</li>
-                             <li class="flex items-center text-gray-500"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>Google Analytics</li>
-                             <li class="flex items-center text-gray-500"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>Análise de Cliques</li>
+                        <ul class="space-y-3 mb-8 flex-grow">
+                            <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Encurtador de links ilimitado</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>QR Code ilimitado</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Até 3 Links na Bio</li>
+                            <li class="flex items-center text-gray-500"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>QR Codes Personalizáveis</li>
                             <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Marca d'água lynkn.me</li>
                         </ul>
-                        <button class="w-full py-3 px-6 border border-indigo-400 text-indigo-400 font-bold rounded-lg hover:bg-indigo-900/20 transition-all">Seu plano atual</button>
+                        <button class="w-full py-3 px-6 border border-indigo-400 text-indigo-400 font-bold rounded-lg hover:bg-indigo-900/20 transition-all mt-auto">Seu plano atual</button>
                     </div>
 
-                    <!-- Premium Plan -->
-                    <div class="w-full max-w-sm border-2 border-indigo-500 rounded-xl p-8 card-shadow bg-gray-800 relative">
-                         <span class="absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase">Mais Popular</span>
-                        <h3 class="text-2xl font-bold text-center text-indigo-400">Premium</h3>
-                        <p class="text-gray-400 text-center mt-2 mb-6">Para quem busca o máximo de conversão.</p>
+                    <!-- Premium Monthly Plan -->
+                    <div class="w-full max-w-sm border-2 border-indigo-500 rounded-xl p-8 card-shadow bg-gray-800 relative flex flex-col">
+                        <h3 class="text-2xl font-bold text-center text-indigo-400">Premium Mensal</h3>
+                        <p class="text-gray-400 text-center mt-2 mb-6">Flexibilidade total.</p>
                         <p class="text-center mb-6"><span class="text-4xl font-extrabold">R$29</span><span class="text-gray-400">/mês</span></p>
-                        <ul class="space-y-3 mb-8">
+                        <ul class="space-y-3 mb-8 flex-grow">
                             <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Todos recursos do Gratuito</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Links na Bio Ilimitados</li>
                             <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Personalização Completa</li>
-                            <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Google Analytics</li>
-                             <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Análise de Cliques</li>
-                             <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Sem marca d'água</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Análise de Cliques</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Sem marca d'água</li>
                         </ul>
-                        <button @click="upgradePlan()" class="w-full py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transform hover:scale-105 transition-all">Fazer Upgrade</button>
+                        <button @click="upgradePlan('monthly')" class="w-full py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transform hover:scale-105 transition-all mt-auto">Fazer Upgrade</button>
+                    </div>
+                    
+                    <!-- Premium Annual Plan -->
+                     <div class="w-full max-w-sm border-2 border-green-500 rounded-xl p-8 card-shadow bg-gray-800 relative flex flex-col">
+                        <span class="absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase">2 MESES GRÁTIS</span>
+                        <h3 class="text-2xl font-bold text-center text-green-400">Premium Anual</h3>
+                        <p class="text-gray-400 text-center mt-2 mb-6">A melhor oferta.</p>
+                        <p class="text-center mb-6"><span class="text-4xl font-extrabold">R$290</span><span class="text-gray-400">/ano</span></p>
+                         <ul class="space-y-3 mb-8 flex-grow">
+                            <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Todos recursos do Gratuito</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Links na Bio Ilimitados</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Personalização Completa</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Análise de Cliques</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Sem marca d'água</li>
+                         </ul>
+                        <button @click="upgradePlan('annual')" class="w-full py-3 px-6 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transform hover:scale-105 transition-all mt-auto">Fazer Upgrade</button>
                     </div>
                 </div>
             </div>
@@ -420,7 +450,7 @@
     <!-- Modals -->
     <div x-show="showModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 modal-backdrop p-4">
         <!-- Login/Signup Modal -->
-        <div x-show="modalContent === 'auth'" @click.away="showModal = false" class="bg-gray-800 rounded-2xl w-full max-w-md p-8 card-shadow modal-content" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95">
+        <div x-show="modalContent === 'auth'" @click.away="showModal = false" class="bg-gray-800 rounded-2xl w-full max-w-md p-8 card-shadow modal-content" x-transition>
              <div class="flex justify-between items-center mb-6">
                  <h2 class="text-2xl font-bold" x-text="authMode === 'login' ? 'Acesse sua Conta' : 'Crie sua Conta'"></h2>
                  <button @click="showModal = false" class="text-gray-400 hover:text-gray-200">
@@ -459,7 +489,7 @@
                  </button>
              </div>
             <div x-show="selectedLink" class="text-center">
-                <p class="text-gray-400">Link: <b class="text-indigo-400" x-text="selectedLink ? selectedLink.slug : ''"></b></p>
+                <p class="text-gray-400">Link: <b class="text-indigo-400" x-text="selectedLink ? selectedLink.shortURL : ''"></b></p>
                 <p class="text-6xl font-extrabold my-4" x-text="selectedLink ? selectedLink.clicks : 0"></p>
                 <p class="text-gray-500">Cliques totais</p>
             </div>
@@ -507,6 +537,11 @@
                 selectedLink: null,
                 creatorMode: 'link',
                 bioTab: 'content',
+                // <-- ATUALIZE AQUI: Insira as suas credenciais do Short.io -->
+                shortIoApiKey: 'pk_eYgTPBzCM7hog1PL',
+                shortIoDomain: 'lynkn.short.gy',
+                qrCodeUrl: '',
+                generatedQrCode: null,
                 credentials: { email: '', password: '', username: '' },
                 link: {
                     originalUrl: '',
@@ -546,11 +581,11 @@
                 appId: 'default-app-id',
                 unsubscribeLinks: null,
                 isAuthReady: false,
-                
+
                 // Stripe
                 stripe: null,
                 elements: null,
-
+                
                 // Methods
                 initFirebase() {
                     const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : 
@@ -686,24 +721,54 @@
                 async saveLink() {
                     if (!this.link.originalUrl || !this.userId || (this.auth.currentUser && this.auth.currentUser.isAnonymous)) {
                         this.showNotification("Faça login para salvar um link.");
-                        this.showModal = true;
                         this.modalContent = 'auth';
+                        this.showModal = true;
                         return;
                     }
+                    if (this.shortIoApiKey === 'YOUR_SHORT.IO_SECRET_KEY' || !this.shortIoDomain || this.shortIoDomain === 'YOUR_SHORT.IO_DOMAIN') {
+                        this.showNotification("Erro: A configuração do Short.io não está completa.");
+                        return;
+                    }
+
                     try {
+                        const response = await fetch('https://api.short.io/links', {
+                            method: 'POST',
+                            headers: {
+                                'authorization': this.shortIoApiKey,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                originalURL: this.link.originalUrl,
+                                domain: this.shortIoDomain,
+                                path: this.link.slug || undefined,
+                                allowDuplicates: false,
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            if (data.message && data.message.toLowerCase().includes('path already exists')) {
+                                throw new Error('Este slug personalizado já está em uso. Tente outro.');
+                            }
+                            throw new Error(data.message || 'Erro ao criar o link no Short.io.');
+                        }
+
                         const linksCollection = collection(this.db, 'artifacts', this.appId, 'users', this.userId, 'links');
                         await addDoc(linksCollection, {
-                            originalUrl: this.link.originalUrl,
-                            slug: this.link.slug || this.generateRandomSlug(),
-                            gaId: this.userPlan === 'premium' ? this.link.gaId : '',
+                            originalUrl: data.originalURL,
+                            shortURL: data.shortURL,
+                            slug: data.path, 
                             createdAt: serverTimestamp(),
-                            clicks: 0
+                            clicks: 0 
                         });
+
                         this.showNotification("Link salvo com sucesso!");
                         this.link.originalUrl = '';
                         this.link.slug = '';
                     } catch (error) {
-                        this.showNotification(`Erro ao salvar: ${error.message}`);
+                        this.showNotification(`Erro: ${error.message}`);
+                        console.error("Erro ao criar o link com Short.io:", error);
                     }
                 },
                 
@@ -822,7 +887,7 @@
                         this.isUploadingPhoto = false;
                     }
                 },
-                
+
                 async upgradePlan() {
                     if (!this.isLoggedIn) {
                         this.showNotification("Por favor, faça login para fazer o upgrade.");
@@ -836,49 +901,63 @@
 
                     await this.$nextTick(); 
 
-                    // <-- ATUALIZE AQUI com a sua chave publicável do Stripe -->
-                    this.stripe = Stripe('pk_test_51RYO3APnabtqgpvozmeYrG7muzrbDL7gCWqCc8SpdxGqrjvE58CLTY7uegD25SsI5pZuYk3lwQeUuNDDE6BoP2Da00XxmU2BD8'); 
-                    
-                    // <-- ATUALIZE AQUI com o URL do seu servidor -->
-                    const serverUrl = 'https://fpimentel35.github.io/lynkn.me/'; 
-                    
-                    const response = await fetch(`${serverUrl}/create-payment-intent`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ userId: this.userId, userEmail: this.auth.currentUser.email })
-                    });
-                    const { clientSecret } = await response.json();
+                    try {
+                        // <-- ATUALIZE AQUI com a sua chave publicável do Stripe -->
+                        this.stripe = Stripe('pk_test_51RYO3APnabtqgpvozmeYrG7muzrbDL7gCWqCc8SpdxGqrjvE58CLTY7uegD25SsI5pZuYk3lwQeUuNDDE6BoP2Da00XxmU2BD8'); 
+                        
+                        // <-- ATUALIZE AQUI com o URL do seu servidor backend -->
+                        const serverUrl = 'https://lynkn-me.vercel.app'; 
 
-                    this.elements = this.stripe.elements({ clientSecret });
-                    const paymentElement = this.elements.create("payment");
-                    paymentElement.mount("#payment-element");
-
-                    const form = document.getElementById('payment-form');
-                    form.addEventListener('submit', async (e) => {
-                        e.preventDefault();
-
-                        document.getElementById('submit-payment').disabled = true;
-                        document.getElementById('spinner').style.display = 'inline';
-                        document.getElementById('button-text').style.display = 'none';
-
-                        const { error } = await this.stripe.confirmPayment({
-                            elements: this.elements,
-                            confirmParams: {
-                                return_url: `${window.location.origin}/sucesso.html`, // <-- ATUALIZE AQUI
-                            },
+                        const response = await fetch(`${serverUrl}/create-payment-intent`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ userId: this.userId, userEmail: this.auth.currentUser.email })
                         });
 
-                        if (error) {
-                            const messageContainer = document.getElementById('payment-message');
-                            messageContainer.textContent = error.message;
-                            messageContainer.style.display = 'block';
-                            document.getElementById('submit-payment').disabled = false;
-                            document.getElementById('spinner').style.display = 'none';
-                            document.getElementById('button-text').style.display = 'inline';
+                        if (!response.ok) {
+                            throw new Error(`O servidor respondeu com o estado: ${response.status}`);
                         }
-                    });
-                },
 
+                        const { clientSecret } = await response.json();
+
+                        this.elements = this.stripe.elements({ clientSecret });
+                        const paymentElement = this.elements.create("payment");
+                        paymentElement.mount("#payment-element");
+
+                        const form = document.getElementById('payment-form');
+                        if (!form.dataset.listenerAttached) {
+                            form.addEventListener('submit', async (e) => {
+                                e.preventDefault();
+                                
+                                document.getElementById('submit-payment').disabled = true;
+                                document.getElementById('spinner').style.display = 'inline';
+                                document.getElementById('button-text').style.display = 'none';
+
+                                const { error } = await this.stripe.confirmPayment({
+                                    elements: this.elements,
+                                    confirmParams: {
+                                        return_url: `${window.location.origin}/sucesso.html`, // <-- ATUALIZE AQUI para a sua página de sucesso
+                                    },
+                                });
+
+                                if (error) {
+                                    const messageContainer = document.getElementById('payment-message');
+                                    messageContainer.textContent = error.message;
+                                    messageContainer.style.display = 'block';
+                                    document.getElementById('submit-payment').disabled = false;
+                                    document.getElementById('spinner').style.display = 'none';
+                                    document.getElementById('button-text').style.display = 'inline';
+                                }
+                            });
+                            form.dataset.listenerAttached = 'true';
+                        }
+                    } catch (error) {
+                        console.error("Falha ao conectar com o servidor de pagamento:", error);
+                        this.showNotification("Não foi possível conectar ao servidor. Verifique se o backend está a ser executado.");
+                        this.showModal = false; 
+                    }
+                },
+                
                 addBioLinkField() {
                     this.bioPage.links.push({ title: '', url: '', icon: 'none' });
                 },
@@ -974,8 +1053,12 @@
                     return icons[name] || '';
                 },
 
-                generateRandomSlug(length = 6) {
-                    return Math.random().toString(36).substring(2, 2 + length);
+                generateQrCode() {
+                    if (!this.qrCodeUrl) {
+                        this.showNotification("Por favor, insira um URL.");
+                        return;
+                    }
+                    this.generatedQrCode = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(this.qrCodeUrl)}`;
                 },
 
                 showNotification(message) {
@@ -997,9 +1080,12 @@
                     if(mode === 'link') {
                         titleEl.textContent = "Encurtador de Links - lynkn.me";
                         descEl.setAttribute('content', 'Encurte e personalize URLs longas de forma rápida e fácil. Monitore seus links com a nossa ferramenta.');
-                    } else { // bio
+                    } else if (mode === 'bio') { 
                         titleEl.textContent = "Crie sua Página Link na Bio - lynkn.me";
                         descEl.setAttribute('content', "Agrupe todos os seus links importantes numa única página de 'Link na Bio' personalizada. Ideal para redes sociais.");
+                    } else { // qrcode
+                        titleEl.textContent = "Gerador de QR Code - lynkn.me";
+                        descEl.setAttribute('content', "Crie QR Codes para os seus links de forma rápida e gratuita.");
                     }
                 }
             }
