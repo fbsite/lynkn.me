@@ -8,19 +8,20 @@
     <title>lynkn.me - Encurtador de Links e Link na Bio</title>
     <meta name="description" content="Transforme links longos em links curtos e crie uma página personalizada de 'Link na Bio' para agrupar todos os seus links importantes. Monitore e personalize.">
     <meta name="keywords" content="encurtador de link, link na bio, links personalizados, agregador de links, marketing digital">
-    <link rel="canonical" href="lynkn-me.vercel.app">
+    <link rel="canonical" href="https://lynkn.me">
     <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/png" href="https://placehold.co/32x32/667eea/ffffff?text=L">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="lynkn-me.vercel.app/">
+    <meta property="og:url" content="https://lynkn.me/">
     <meta property="og:title" content="lynkn.me - Encurtador de Links e Link na Bio">
     <meta property="og:description" content="Transforme links longos em links curtos e crie uma página personalizada de 'Link na Bio' para agrupar todos os seus links importantes.">
     <meta property="og:image" content="https://placehold.co/1200x630/667eea/ffffff?text=lynkn.me">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="lynkn-me.vercel.app/">
+    <meta property="twitter:url" content="https://lynkn.me/">
     <meta property="twitter:title" content="lynkn.me - Encurtador de Links e Link na Bio">
     <meta property="twitter:description" content="Transforme links longos em links curtos e crie uma página personalizada de 'Link na Bio' para agrupar todos os seus links importantes.">
     <meta property="twitter:image" content="https://placehold.co/1200x630/667eea/ffffff?text=lynkn.me">
@@ -127,7 +128,7 @@
                         <div class="max-w-xl mx-auto">
                             <div class="flex flex-col">
                                 <h2 id="creator-heading-link" class="text-2xl font-bold mb-1 text-center">Crie seu link irresistível</h2>
-                                <p class="text-gray-400 mb-6 text-center">Seus links são criados e salvos na sua conta.</p>
+                                <p class="text-gray-400 mb-6 text-center">Os seus links são guardados em segurança na sua conta.</p>
                                 
                                 <div class="space-y-4">
                                     <div>
@@ -222,25 +223,31 @@
                                     <div x-show="bioTab === 'appearance'" x-transition class="space-y-6">
                                         <div>
                                             <label class="block text-sm font-medium">Plano de Fundo</label>
-                                            <div class="mt-2 flex flex-wrap items-center gap-2">
-                                                <template x-for="color in colorOptions.background" :key="color.value">
-                                                    <button @click="bioPage.background = color.value" :disabled="color.premium && userPlan === 'free'" :class="{'ring-2 ring-indigo-500': bioPage.background === color.value, 'opacity-50 cursor-not-allowed': color.premium && userPlan === 'free'}" class="w-8 h-8 rounded-full border-2 border-white/50" :style="{ background: color.class ? '' : color.value }" :class="{[color.class]: color.class}"></button>
+                                            <div class="mt-2 grid grid-cols-9 gap-2">
+                                                <template x-for="color in colorOptions.palette" :key="color.name">
+                                                    <button @click="bioPage.background = color.color" :disabled="color.premium && userPlan === 'free'" :class="{'ring-2 ring-indigo-500': bioPage.background === color.color, 'opacity-50 cursor-not-allowed': color.premium && userPlan === 'free'}" class="w-8 h-8 rounded-full border-2 border-white/50" :style="{ backgroundColor: color.color }"></button>
                                                 </template>
-                                                <div :class="{'opacity-50': userPlan === 'free'}">
-                                                    <input type="color" x-model="bioPage.background" :disabled="userPlan === 'free'" class="w-8 h-8 p-1 bg-gray-700 rounded-full cursor-pointer">
-                                                </div>
                                             </div>
-                                            <p x-show="userPlan === 'free'" class="text-xs text-gray-500 mt-2">Mais opções no plano Premium.</p>
+                                             <div class="mt-4" :class="{'opacity-50': userPlan === 'free'}">
+                                                <label class="flex items-center gap-2">
+                                                    <input type="color" x-model="bioPage.background" :disabled="userPlan === 'free'" class="w-8 h-8 p-1 bg-gray-700 rounded-full cursor-pointer">
+                                                    Cor Personalizada
+                                                </label>
+                                            </div>
+                                            <p x-show="userPlan === 'free'" class="text-xs text-gray-500 mt-2">Mais opções de cores no plano Premium.</p>
                                         </div>
                                         <div>
                                             <label class="block text-sm font-medium">Cor dos Botões</label>
-                                             <div class="mt-2 flex flex-wrap items-center gap-2">
-                                                <template x-for="color in colorOptions.buttons" :key="color.value">
-                                                    <button @click="bioPage.buttonColor = color.value" :disabled="color.premium && userPlan === 'free'" :class="{'ring-2 ring-indigo-500': bioPage.buttonColor === color.value, 'opacity-50 cursor-not-allowed': color.premium && userPlan === 'free'}" class="w-8 h-8 rounded-full border-2 border-white/50" :style="{ backgroundColor: color.color }"></button>
+                                             <div class="mt-2 grid grid-cols-9 gap-2">
+                                                <template x-for="color in colorOptions.palette" :key="color.name">
+                                                    <button @click="bioPage.buttonColor = color.color" :disabled="color.premium && userPlan === 'free'" :class="{'ring-2 ring-indigo-500': bioPage.buttonColor === color.color, 'opacity-50 cursor-not-allowed': color.premium && userPlan === 'free'}" class="w-8 h-8 rounded-full border-2 border-white/50" :style="{ backgroundColor: color.color }"></button>
                                                 </template>
-                                                <div :class="{'opacity-50': userPlan === 'free'}">
+                                             </div>
+                                            <div class="mt-4" :class="{'opacity-50': userPlan === 'free'}">
+                                                 <label class="flex items-center gap-2">
                                                     <input type="color" x-model="bioPage.buttonColor" :disabled="userPlan === 'free'" class="w-8 h-8 p-1 bg-gray-700 rounded-full cursor-pointer">
-                                                </div>
+                                                     Cor Personalizada
+                                                 </label>
                                              </div>
                                         </div>
                                         <div>
@@ -410,6 +417,7 @@
                         <h3 class="text-2xl font-bold text-center text-indigo-400">Premium Mensal</h3>
                         <p class="text-gray-400 text-center mt-2 mb-6">Flexibilidade total.</p>
                         <p class="text-center mb-6"><span class="text-4xl font-extrabold">R$29</span><span class="text-gray-400">/mês</span></p>
+                        <p class="text-center text-sm text-gray-400 -mt-4 mb-6">Comece com 7 dias grátis</p>
                         <ul class="space-y-3 mb-8 flex-grow">
                             <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Todos recursos do Gratuito</li>
                             <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Links na Bio Ilimitados</li>
@@ -426,6 +434,7 @@
                         <h3 class="text-2xl font-bold text-center text-green-400">Premium Anual</h3>
                         <p class="text-gray-400 text-center mt-2 mb-6">A melhor oferta.</p>
                         <p class="text-center mb-6"><span class="text-4xl font-extrabold">R$290</span><span class="text-gray-400">/ano</span></p>
+                         <p class="text-center text-sm text-gray-400 -mt-4 mb-6">Comece com 7 dias grátis</p>
                          <ul class="space-y-3 mb-8 flex-grow">
                             <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Todos recursos do Gratuito</li>
                             <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Links na Bio Ilimitados</li>
@@ -494,19 +503,6 @@
                 <p class="text-gray-500">Cliques totais</p>
             </div>
         </div>
-
-        <!-- Payment Modal -->
-        <div x-show="modalContent === 'payment'" @click.away="showModal = false" class="bg-gray-800 rounded-2xl w-full max-w-md p-8 card-shadow modal-content" x-transition>
-            <h2 class="text-2xl font-bold mb-4">Finalizar Assinatura Premium</h2>
-            <form id="payment-form">
-                <div id="payment-element" class="p-4 bg-gray-900 rounded-md"></div>
-                <button id="submit-payment" class="w-full mt-6 py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-all">
-                    <span id="button-text">Pagar R$29,00</span>
-                    <span id="spinner" style="display: none;">Processando...</span>
-                </button>
-                <div id="payment-message" class="hidden text-center text-red-400 mt-2"></div>
-            </form>
-        </div>
     </div>
 
     <!-- Notification -->
@@ -560,17 +556,16 @@
                     embedCode: '',
                 },
                 colorOptions: {
-                    background: [
-                        { value: '#FFFFFF', premium: false }, { value: '#1F2937', premium: false }, { value: '#000000', premium: false },
-                        { value: '#BE123C', premium: true }, { value: '#047857', premium: true }, { value: '#1D4ED8', premium: true },
-                        { value: 'gradient1', premium: true, class: 'bg-gradient-to-r from-green-300 to-blue-400' },
-                        { value: 'gradient2', premium: true, class: 'bg-gradient-to-r from-pink-500 to-yellow-500' },
-                        { value: 'gradient3', premium: true, class: 'bg-gradient-to-r from-purple-400 to-indigo-500' },
-                    ],
-                    buttons: [
-                         { value: 'default', premium: false, color: '#4f46e5' }, { value: '#FFFFFF', premium: false, color: '#FFFFFF' }, { value: '#000000', premium: false, color: '#000000' },
-                         { value: '#EF4444', premium: true, color: '#EF4444' }, { value: '#F59E0B', premium: true, color: '#F59E0B' }, { value: '#22C55E', premium: true, color: '#22C55E' },
-                         { value: '#3B82F6', premium: true, color: '#3B82F6' }, { value: '#8B5CF6', premium: true, color: '#8B5CF6' }, { value: '#EC4899', premium: true, color: '#EC4899' },
+                    palette: [
+                        { name: 'Branco', color: '#FFFFFF', premium: false },
+                        { name: 'Preto', color: '#000000', premium: false },
+                        { name: 'Cinza', color: '#808080', premium: false },
+                        { name: 'Vermelho', color: '#EF4444', premium: true },
+                        { name: 'Azul', color: '#3B82F6', premium: true },
+                        { name: 'Roxo', color: '#8B5CF6', premium: true },
+                        { name: 'Rosa', color: '#EC4899', premium: true },
+                        { name: 'Amarelo', color: '#F59E0B', premium: true },
+                        { name: 'Verde', color: '#22C55E', premium: true },
                     ]
                 },
                 notification: { show: false, message: '' },
@@ -581,10 +576,6 @@
                 appId: 'default-app-id',
                 unsubscribeLinks: null,
                 isAuthReady: false,
-
-                // Stripe
-                stripe: null,
-                elements: null,
                 
                 // Methods
                 initFirebase() {
@@ -888,73 +879,32 @@
                     }
                 },
 
-                async upgradePlan() {
+                async upgradePlan(planType) {
                     if (!this.isLoggedIn) {
                         this.showNotification("Por favor, faça login para fazer o upgrade.");
                         this.modalContent = 'auth';
                         this.showModal = true;
                         return;
                     }
-
-                    this.modalContent = 'payment';
-                    this.showModal = true;
-
-                    await this.$nextTick(); 
-
+                    
+                    const serverUrl = 'https://lynkn-me.vercel.app'; // <-- ATUALIZE PARA O URL DO SEU SERVIDOR ONLINE
                     try {
-                        // <-- ATUALIZE AQUI com a sua chave publicável do Stripe -->
-                        this.stripe = Stripe('pk_test_51RYO3APnabtqgpvozmeYrG7muzrbDL7gCWqCc8SpdxGqrjvE58CLTY7uegD25SsI5pZuYk3lwQeUuNDDE6BoP2Da00XxmU2BD8'); 
-                        
-                        // <-- ATUALIZE AQUI com o URL do seu servidor backend -->
-                        const serverUrl = 'https://lynkn-me.vercel.app'; 
-
-                        const response = await fetch(`${serverUrl}/create-payment-intent`, {
+                        const response = await fetch(`${serverUrl}/create-checkout-link`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ userId: this.userId, userEmail: this.auth.currentUser.email })
+                            body: JSON.stringify({ planType: planType })
                         });
 
                         if (!response.ok) {
-                            throw new Error(`O servidor respondeu com o estado: ${response.status}`);
+                           throw new Error('Falha ao criar o link de pagamento.');
                         }
+                        
+                        const data = await response.json();
+                        window.location.href = data.url;
 
-                        const { clientSecret } = await response.json();
-
-                        this.elements = this.stripe.elements({ clientSecret });
-                        const paymentElement = this.elements.create("payment");
-                        paymentElement.mount("#payment-element");
-
-                        const form = document.getElementById('payment-form');
-                        if (!form.dataset.listenerAttached) {
-                            form.addEventListener('submit', async (e) => {
-                                e.preventDefault();
-                                
-                                document.getElementById('submit-payment').disabled = true;
-                                document.getElementById('spinner').style.display = 'inline';
-                                document.getElementById('button-text').style.display = 'none';
-
-                                const { error } = await this.stripe.confirmPayment({
-                                    elements: this.elements,
-                                    confirmParams: {
-                                        return_url: `${window.location.origin}/sucesso.html`, // <-- ATUALIZE AQUI para a sua página de sucesso
-                                    },
-                                });
-
-                                if (error) {
-                                    const messageContainer = document.getElementById('payment-message');
-                                    messageContainer.textContent = error.message;
-                                    messageContainer.style.display = 'block';
-                                    document.getElementById('submit-payment').disabled = false;
-                                    document.getElementById('spinner').style.display = 'none';
-                                    document.getElementById('button-text').style.display = 'inline';
-                                }
-                            });
-                            form.dataset.listenerAttached = 'true';
-                        }
                     } catch (error) {
-                        console.error("Falha ao conectar com o servidor de pagamento:", error);
-                        this.showNotification("Não foi possível conectar ao servidor. Verifique se o backend está a ser executado.");
-                        this.showModal = false; 
+                        console.error("Erro ao criar link de checkout:", error);
+                        this.showNotification("Não foi possível iniciar o pagamento. Tente novamente.");
                     }
                 },
                 
